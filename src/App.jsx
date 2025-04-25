@@ -1,6 +1,7 @@
 import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
-import QuestionnairePage from "./Page";
+import QuestionnairePage from "./BiodataForm";
+import SubmissionPage from "./Submission";
 // import SubmissionPage from "./components/SubmissionPage";
 
 function App() {
@@ -14,6 +15,8 @@ function App() {
         {/* <Route path="/submission-page" element={<SubmissionPage />} /> */}
 
         {/* Redirect to questionnaire page if no match */}
+        <Route
+          path="/download-page" element={<SubmissionPage />} />
         <Route
           path="*"
           element={<Navigate to="/questionnaire-page" replace />}

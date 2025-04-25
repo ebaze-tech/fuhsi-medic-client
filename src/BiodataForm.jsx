@@ -3,75 +3,76 @@ import { useNavigate } from "react-router-dom";
 import API from "../api";
 import "./index.css";
 import { TextInput, YesNoRadioGroup, SelectInput } from "./components";
+// import {handleDownload}
 import { Disclosure, Transition } from "@headlessui/react";
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/24/outline";
 
 const QuestionnairePage = () => {
   const [formData, setFormData] = useState({
-    surname: "",
-    otherNames: "",
-    age: "",
-    dob: "",
-    sex: "",
-    nationality: "",
-    state: "",
-    maritalStatus: "",
-    faculty: "",
-    matricNo: "",
-    jambRegNo: "",
-    department: "",
-    telNo: "",
-    religion: "",
-    nextOfKinName: "",
-    relationship: "",
-    nextOfKinAddress: "",
-    nextOfKinTel: "",
-    tuberculosisYes: false,
+    surname: "John",
+    otherNames: "Doe",
+    age: "20",
+    dob: "20/1/1995",
+    sex: "Male",
+    nationality: "Nigerian",
+    state: "Oyo",
+    maritalStatus: "Single",
+    faculty: "Technology",
+    matricNo: "12345",
+    jambRegNo: "ER1234",
+    department: "BMLS",
+    telNo: "098765",
+    religion: "NONE",
+    nextOfKinName: "NONE",
+    relationship: "NONE",
+    nextOfKinAddress: "NONE",
+    nextOfKinTel: "NONE",
+    tuberculosisYes: true,
     tuberculosisNo: false,
-    asthmaYes: false,
+    asthmaYes: true,
     asthmaNo: false,
-    pepticUlcerYes: false,
+    pepticUlcerYes: true,
     pepticUlcerNo: false,
-    sickleCellYes: false,
+    sickleCellYes: true,
     sickleCellNo: false,
-    allergiesYes: false,
+    allergiesYes: true,
     allergiesNo: false,
-    diabetesYes: false,
+    diabetesYes: true,
     diabetesNo: false,
-    hypertensionYes: false,
+    hypertensionYes: true,
     hypertensionNo: false,
-    seizuresYes: false,
+    seizuresYes: true,
     seizuresNo: false,
-    mentalIllnessYes: false,
+    mentalIllnessYes: true,
     mentalIllnessNo: false,
-    familyTuberculosisYes: false,
+    familyTuberculosisYes: true,
     familyTuberculosisNo: false,
-    familyMentalIllnessYes: false,
+    familyMentalIllnessYes: true,
     familyMentalIllnessNo: false,
-    familyDiabetesYes: false,
+    familyDiabetesYes: true,
     familyDiabetesNo: false,
-    familyHeartDiseaseYes: false,
+    familyHeartDiseaseYes: true,
     familyHeartDiseaseNo: false,
-    smallpoxYes: false,
+    smallpoxYes: true,
     smallpoxNo: false,
-    poliomyelitisYes: false,
+    poliomyelitisYes: true,
     poliomyelitisNo: false,
-    immunizationTuberculosisYes: false,
+    immunizationTuberculosisYes: true,
     immunizationTuberculosisNo: false,
-    meningitisYes: false,
+    meningitisYes: true,
     meningitisNo: false,
-    hpvYes: false,
+    hpvYes: true,
     hpvNo: false,
-    hepatitisBYes: false,
+    hepatitisBYes: true,
     hepatitisBNo: false,
-    tobaccoUseYes: false,
+    tobaccoUseYes: true,
     tobaccoUseNo: false,
-    secondhandSmokeYes: false,
+    secondhandSmokeYes: true,
     secondhandSmokeNo: false,
-    alcoholConsumptionYes: false,
+    alcoholConsumptionYes: true,
     alcoholConsumptionNo: false,
-    tobaccoAlcoholDetails: "",
-    otherMedicalInfo: "",
+    tobaccoAlcoholDetails: "NONE",
+    otherMedicalInfo: "NONE",
   });
 
   const [errors, setErrors] = useState({});
@@ -266,21 +267,10 @@ const QuestionnairePage = () => {
     setShowConfirmation(false);
     setIsSubmitting(true);
     try {
-      const response = await API.post("/generate-pdf", formData, {
-        responseType: "blob",
-      });
-
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement("a");
-      link.href = url;
-      link.setAttribute("download", "questionnaire.pdf");
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      navigate("/submission-page");
+      navigate("/download-page", { state: { formData } })
     } catch (error) {
-      console.error("Error generating PDF:", error);
-      alert("Error generating PDF. Please try again.");
+      console.error("Error in handleProceed:", error);
+      alert("Error. Please try again");
     } finally {
       setIsSubmitting(false);
     }
@@ -288,7 +278,7 @@ const QuestionnairePage = () => {
 
   const handleGoBack = () => {
     setShowConfirmation(false);
-    navigate("/questionnaire-page"); // Navigate back to the questionnaire page
+    navigate("/questionnaire-page")
   };
 
   return (
@@ -361,7 +351,7 @@ const QuestionnairePage = () => {
                   <TextInput
                     label="Age"
                     name="age"
-                    type="number"
+                    type="text"
                     value={formData.age}
                     onChange={handleInputChange}
                     error={errors.age}
@@ -850,20 +840,20 @@ const QuestionnairePage = () => {
               {(formData.tobaccoUseYes ||
                 formData.secondhandSmokeYes ||
                 formData.alcoholConsumptionYes) && (
-                <TextInput
-                  label="If the answer to any of the above is YES, provide details:"
-                  name="tobaccoAlcoholDetails"
-                  value={formData.tobaccoAlcoholDetails}
-                  onChange={handleInputChange}
-                  error={errors.tobaccoAlcoholDetails}
-                  className="bg-white"
-                  required={
-                    formData.tobaccoUseYes ||
-                    formData.secondhandSmokeYes ||
-                    formData.alcoholConsumptionYes
-                  }
-                />
-              )}
+                  <TextInput
+                    label="If the answer to any of the above is YES, provide details:"
+                    name="tobaccoAlcoholDetails"
+                    value={formData.tobaccoAlcoholDetails}
+                    onChange={handleInputChange}
+                    error={errors.tobaccoAlcoholDetails}
+                    className="bg-white"
+                    required={
+                      formData.tobaccoUseYes ||
+                      formData.secondhandSmokeYes ||
+                      formData.alcoholConsumptionYes
+                    }
+                  />
+                )}
 
               <TextInput
                 label="If there is any other medical information not stated above, please provide details:"
