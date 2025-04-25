@@ -33,7 +33,7 @@ const SubmissionPage = () => {
     }, 1000);
     return () => clearInterval(interval)
   }, [formData]);
-
+  
   const handleDownload = async (formData) => {
     setIsLoading(true);
     try {
