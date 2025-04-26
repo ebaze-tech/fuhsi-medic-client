@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import API from "../api";
 import "./index.css";
-import { TextInput, YesNoRadioGroup, SelectInput } from "./components";
+import { TextInput, YesNoRadioGroup, SelectInput } from "./Components";
 // import {handleDownload}
 import { Disclosure, Transition } from "@headlessui/react";
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/24/outline";
