@@ -6,7 +6,6 @@ import { FaExclamationCircle, FaSpinner, FaUser } from 'react-icons/fa';
 import { FiUser, FiHash } from 'react-icons/fi';
 import Logo from '/fuhsi_logo.png';
 import BgImage from '/fuhs-3.jpg';
-
 const AdminLogin = () => {
   const { login, isAuthenticated } = useAuth();
   const [email, setEmail] = useState('');
@@ -21,13 +20,13 @@ const AdminLogin = () => {
 
   useEffect(() => {
     if (isAuthenticated) {
-      navigate('/dashboard/user');
+      navigate('/dashboard/admin');
     }
   }, [isAuthenticated, navigate]);
 
   const validateField = (name, value) => {
     const newErrors = { ...errors };
-    
+
     if (name === 'email') {
       if (!value) {
         newErrors.email = 'Email is required';
@@ -37,7 +36,7 @@ const AdminLogin = () => {
         delete newErrors.email;
       }
     }
-    
+
     if (name === 'password') {
       if (!value) {
         newErrors.password = 'Password is required';
@@ -47,7 +46,7 @@ const AdminLogin = () => {
         delete newErrors.password;
       }
     }
-    
+
     setErrors(newErrors);
   };
 
@@ -59,11 +58,11 @@ const AdminLogin = () => {
   };
 
   const handleFocus = (field) => {
-    setIsFocused({...isFocused, [field]: true});
+    setIsFocused({ ...isFocused, [field]: true });
   };
 
   const handleBlur = (field) => {
-    setIsFocused({...isFocused, [field]: false});
+    setIsFocused({ ...isFocused, [field]: false });
     validateField(field, field === 'email' ? email : password);
   };
 
@@ -80,7 +79,7 @@ const AdminLogin = () => {
     try {
       const { data } = await API.post('/auth/admin/login', { password, email });
       login(data.token, data.user);
-      navigate('/dashboard/user');
+      navigate('/dashboard/admin');
     } catch (error) {
       setErrors({
         form: error.response?.data?.message || 'Login failed. Please try again.',
@@ -102,10 +101,10 @@ const AdminLogin = () => {
           {/* Header */}
           <div className="!bg-green-700 !p-6 !text-center">
             <div className="!flex !justify-center !mb-4">
-              <img 
-                src={Logo} 
-                alt="University Logo" 
-                className="!w-full !h-12 !object-contain !bg-white !p-2 !rounded-md !shadow-md" 
+              <img
+                src={Logo}
+                alt="University Logo"
+                className="!w-full !h-12 !object-contain !bg-white !p-2 !rounded-md !shadow-md"
               />
             </div>
             <h1 className="!text-2xl !font-bold !text-white">Admin Portal</h1>
@@ -130,9 +129,8 @@ const AdminLogin = () => {
                   Password
                 </label>
                 <div className="!relative">
-                  <div className={`!absolute !inset-y-0 !left-0 !pl-3 !flex !items-center !pointer-events-none ${
-                    isFocused.password ? '!text-blue-600' : '!text-gray-400'
-                  }`}>
+                  <div className={`!absolute !inset-y-0 !left-0 !pl-3 !flex !items-center !pointer-events-none ${isFocused.password ? '!text-blue-600' : '!text-gray-400'
+                    }`}>
                     <FiUser size={18} />
                   </div>
                   <input
@@ -143,11 +141,9 @@ const AdminLogin = () => {
                     onFocus={() => handleFocus('password')}
                     onBlur={() => handleBlur('password')}
                     placeholder="Enter your password"
-                    className={`!w-full !pl-10 !pr-4 !py-3 !border ${
-                      errors.password ? '!border-red-500' : '!border-gray-300'
-                    } !rounded-lg !focus:outline-none !focus:ring-2 ${
-                      errors.password ? '!focus:ring-red-500' : '!focus:ring-blue-500'
-                    } !focus:border-transparent !transition`}
+                    className={`!w-full !pl-10 !pr-4 !py-3 !border ${errors.password ? '!border-red-500' : '!border-gray-300'
+                      } !rounded-lg !focus:outline-none !focus:ring-2 ${errors.password ? '!focus:ring-red-500' : '!focus:ring-blue-500'
+                      } !focus:border-transparent !transition`}
                   />
                 </div>
                 {errors.password && (
@@ -161,9 +157,8 @@ const AdminLogin = () => {
                   Email
                 </label>
                 <div className="!relative">
-                  <div className={`!absolute !inset-y-0 !left-0 !pl-3 !flex !items-center !pointer-events-none ${
-                    isFocused.email ? '!text-blue-600' : '!text-gray-400'
-                  }`}>
+                  <div className={`!absolute !inset-y-0 !left-0 !pl-3 !flex !items-center !pointer-events-none ${isFocused.email ? '!text-blue-600' : '!text-gray-400'
+                    }`}>
                     <FiHash size={18} />
                   </div>
                   <input
@@ -174,11 +169,9 @@ const AdminLogin = () => {
                     onFocus={() => handleFocus('email')}
                     onBlur={() => handleBlur('email')}
                     placeholder="Input your email."
-                    className={`!w-full !pl-10 !pr-4 !py-3 !border ${
-                      errors.email ? '!border-red-500' : '!border-gray-300'
-                    } !rounded-lg !focus:outline-none !focus:ring-2 ${
-                      errors.email ? '!focus:ring-red-500' : '!focus:ring-blue-500'
-                    } !focus:border-transparent !lowercase !transition`}
+                    className={`!w-full !pl-10 !pr-4 !py-3 !border ${errors.email ? '!border-red-500' : '!border-gray-300'
+                      } !rounded-lg !focus:outline-none !focus:ring-2 ${errors.email ? '!focus:ring-red-500' : '!focus:ring-blue-500'
+                      } !focus:border-transparent !lowercase !transition`}
                   />
                 </div>
                 {errors.email && (
@@ -206,8 +199,8 @@ const AdminLogin = () => {
             </form>
 
             <div className="!mt-6 !text-center">
-              <Link 
-                to="/help" 
+              <Link
+                to="/help"
                 className="!text-sm !text-blue-700 !font-medium !hover:!text-blue-800 !hover:!underline !transition"
               >
                 Need help? Contact Support

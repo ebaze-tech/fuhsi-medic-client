@@ -15,7 +15,7 @@ const UserLogin = () => {
   const [loading, setLoading] = useState(false);
   const [isFocused, setIsFocused] = useState({
     utmeNo: false,
-    surname: false
+    surname: false,
   });
   const navigate = useNavigate();
 
@@ -27,12 +27,17 @@ const UserLogin = () => {
 
   const validateField = (name, value) => {
     const newErrors = { ...errors };
+
     if (name === 'utmeNo') {
-      if (!value) newErrors.utmeNo = 'JAMB Number is required';
-      else if (!/^\d{8}[A-Z]{2}$/.test(value))
+      if (!value) {
+        newErrors.utmeNo = 'JAMB Number is required';
+      } else if (!/^\d{8}[A-Z]{2}$/.test(value)) {
         newErrors.utmeNo = 'Format: 8 digits + 2 uppercase letters (e.g., 12345678AB)';
-      else delete newErrors.utmeNo;
+      } else {
+        delete newErrors.utmeNo;
+      }
     }
+
     if (name === 'surname') {
       if (!value) newErrors.surname = 'Surname is required';
       else if (value.length < 2) newErrors.surname = 'Surname must be at least 2 characters';
@@ -43,17 +48,17 @@ const UserLogin = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    if (name === 'utmeNo') setUtmeNo(value.toUpperCase());
+    if (name === 'utmeNo') setUtmeNo(value);
     if (name === 'surname') setSurname(value);
     validateField(name, value);
   };
 
   const handleFocus = (field) => {
-    setIsFocused({...isFocused, [field]: true});
+    setIsFocused({ ...isFocused, [field]: true });
   };
 
   const handleBlur = (field) => {
-    setIsFocused({...isFocused, [field]: false});
+    setIsFocused({ ...isFocused, [field]: false });
     validateField(field, field === 'utmeNo' ? utmeNo : surname);
   };
 
@@ -62,21 +67,36 @@ const UserLogin = () => {
     validateField('utmeNo', utmeNo);
     validateField('surname', surname);
 
-    if (Object.keys(errors).length > 0 || !utmeNo || !surname) return;
+    const currentErrors = {};
+    if (!utmeNo) currentErrors.utmeNo = 'UTME Number is required';
+    if (!surname) currentErrors.surname = 'Surname is required';
+
+    if (Object.keys(currentErrors).length > 0) {
+      setErrors(currentErrors);
+      return;
+    }
 
     setLoading(true);
     setErrors({});
 
     try {
-      const { data } = await API.post('/auth/user/login', { surname, utmeNo });
-      login(data.token, data.user);
-      navigate('/dashboard/user');
+      const response = await API.post('/auth/user/login', { surname: surname.trim(), utmeNo: utmeNo.trim() });
+      console.log('API data:', response); // Debug
+      const responseData = response.data?.data || response.data;
+
+      if (!responseData?.token || !responseData?.user) {
+        throw new Error('Invalid response from server');
+      }
+      login(responseData.token, responseData.user);
+      console.log('handleSubmit: Login successful, navigating to dashboard');
+      setTimeout(() => navigate('/dashboard/user', { replace: true }), 0);
     } catch (error) {
+      console.error('handleSubmit: Login error:', error);
       setErrors({
         form: error.response?.data?.message || 'Login failed. Please try again.',
       });
     } finally {
-      setLoading(false);
+      setLoading(false); console.log('handleSubmit: Loading state reset');
     }
   };
 
@@ -92,10 +112,10 @@ const UserLogin = () => {
           {/* Header */}
           <div className="!bg-green-700 !p-6 !text-center">
             <div className="!flex !justify-center !mb-4">
-              <img 
-                src={Logo} 
-                alt="University Logo" 
-                className="!w-full !h-12 !object-contain !bg-white !p-2 !rounded-md !shadow-md" 
+              <img
+                src={Logo}
+                alt="University Logo"
+                className="!w-full !h-12 !object-contain !bg-white !p-2 !rounded-md !shadow-md"
               />
             </div>
             <h1 className="!text-2xl !font-bold !text-white">Student Portal</h1>
@@ -120,9 +140,8 @@ const UserLogin = () => {
                   Surname
                 </label>
                 <div className="!relative">
-                  <div className={`!absolute !inset-y-0 !left-0 !pl-3 !flex !items-center !pointer-events-none ${
-                    isFocused.surname ? '!text-blue-600' : '!text-gray-400'
-                  }`}>
+                  <div className={`!absolute !inset-y-0 !left-0 !pl-3 !flex !items-center !pointer-events-none ${isFocused.surname ? '!text-blue-600' : '!text-gray-400'
+                    }`}>
                     <FiUser size={18} />
                   </div>
                   <input
@@ -133,11 +152,9 @@ const UserLogin = () => {
                     onFocus={() => handleFocus('surname')}
                     onBlur={() => handleBlur('surname')}
                     placeholder="Enter your surname"
-                    className={`!w-full !pl-10 !pr-4 !py-3 !border ${
-                      errors.surname ? '!border-red-500' : '!border-gray-300'
-                    } !rounded-lg !focus:outline-none !focus:ring-2 ${
-                      errors.surname ? '!focus:ring-red-500' : '!focus:ring-blue-500'
-                    } !focus:border-transparent !transition`}
+                    className={`!w-full !pl-10 !pr-4 !py-3 !border ${errors.surname ? '!border-red-500' : '!border-gray-300'
+                      } !rounded-lg !focus:outline-none !focus:ring-2 ${errors.surname ? '!focus:ring-red-500' : '!focus:ring-blue-500'
+                      } !focus:border-transparent !transition`}
                   />
                 </div>
                 {errors.surname && (
@@ -151,9 +168,8 @@ const UserLogin = () => {
                   UTME Number
                 </label>
                 <div className="!relative">
-                  <div className={`!absolute !inset-y-0 !left-0 !pl-3 !flex !items-center !pointer-events-none ${
-                    isFocused.utmeNo ? '!text-blue-600' : '!text-gray-400'
-                  }`}>
+                  <div className={`!absolute !inset-y-0 !left-0 !pl-3 !flex !items-center !pointer-events-none ${isFocused.utmeNo ? '!text-blue-600' : '!text-gray-400'
+                    }`}>
                     <FiHash size={18} />
                   </div>
                   <input
@@ -164,11 +180,9 @@ const UserLogin = () => {
                     onFocus={() => handleFocus('utmeNo')}
                     onBlur={() => handleBlur('utmeNo')}
                     placeholder="e.g. 12345678AB"
-                    className={`!w-full !pl-10 !pr-4 !py-3 !border ${
-                      errors.utmeNo ? '!border-red-500' : '!border-gray-300'
-                    } !rounded-lg !focus:outline-none !focus:ring-2 ${
-                      errors.utmeNo ? '!focus:ring-red-500' : '!focus:ring-blue-500'
-                    } !focus:border-transparent !uppercase !transition`}
+                    className={`!w-full !pl-10 !pr-4 !py-3 !border ${errors.utmeNo ? '!border-red-500' : '!border-gray-300'
+                      } !rounded-lg !focus:outline-none !focus:ring-2 ${errors.utmeNo ? '!focus:ring-red-500' : '!focus:ring-blue-500'
+                      } !focus:border-transparent !uppercase !transition`}
                   />
                 </div>
                 {errors.utmeNo && (
@@ -196,8 +210,8 @@ const UserLogin = () => {
             </form>
 
             <div className="!mt-6 !text-center">
-              <Link 
-                to="/help" 
+              <Link
+                to="/help"
                 className="!text-sm !text-blue-700 !font-medium !hover:!text-blue-800 !hover:!underline !transition"
               >
                 Need help? Contact Support
