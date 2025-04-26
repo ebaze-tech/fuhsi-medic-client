@@ -53,7 +53,7 @@ const AdminLogin = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    if (name === 'email') setEmail(value.toUpperCase());
+    if (name === 'email') setEmail(value);
     if (name === 'password') setPassword(value);
     validateField(name, value);
   };
