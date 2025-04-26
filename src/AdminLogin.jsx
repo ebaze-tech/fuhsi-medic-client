@@ -173,7 +173,7 @@ const AdminLogin = () => {
                     onChange={handleChange}
                     onFocus={() => handleFocus('email')}
                     onBlur={() => handleBlur('email')}
-                    placeholder="e.g. 12345678AB"
+                    placeholder="Input your email."
                     className={`!w-full !pl-10 !pr-4 !py-3 !border ${
                       errors.email ? '!border-red-500' : '!border-gray-300'
                     } !rounded-lg !focus:outline-none !focus:ring-2 ${
