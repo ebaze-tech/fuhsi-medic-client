@@ -116,6 +116,7 @@ export const YesNoRadioGroup = ({
           name={yesName}
           checked={formData[yesName] === true}
           onChange={onChange}
+          error={error}
           className="!form-radio !text-blue-600 !h-4 !w-4"
         />
       </td>
