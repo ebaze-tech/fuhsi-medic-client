@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import API from "../api";
 import "./index.css";
 import { TextInput, YesNoRadioGroup, SelectInput } from "./Components";
@@ -8,7 +8,8 @@ import { Disclosure, Transition } from "@headlessui/react";
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/24/outline";
 
 const QuestionnairePage = () => {
-  const [formData, setFormData] = useState({
+  const location = useLocation()
+  const [formData, setFormData] = useState(location.state?.formData || {
     surname: "John",
     otherNames: "Doe",
     age: "20",
@@ -79,7 +80,6 @@ const QuestionnairePage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   //   const [sectionBOpen, setSectionBOpen] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
-  const [availableDepartments, setAvailableDepartments] = useState([]);
   const navigate = useNavigate()
   //   const [collapsedSections, setCollapsedSections] = useState({
   //     sectionA: false,
@@ -90,13 +90,6 @@ const QuestionnairePage = () => {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-
-    if (name === 'faculty') {
-      const departments = facultyDepartments[value] || [];
-      setAvailableDepartments(departments);
-      // Reset department when faculty changes
-      setFormData(prev => ({ ...prev, department: '' }));
-    }
   };
 
   //   const handleRadioChange = (field, value) => {
@@ -123,7 +116,7 @@ const QuestionnairePage = () => {
   const validateForm = () => {
     const newErrors = {};
 
-    const textFields = [
+    const requiredtextFields = [
       "surname",
       "otherNames",
       "age",
@@ -144,12 +137,11 @@ const QuestionnairePage = () => {
       "nextOfKinTel",
     ];
 
-    textFields.forEach((field) => {
+    requiredtextFields.forEach((field) => {
       if (!formData[field]) {
         newErrors[field] = `${field
           .replace(/([A-Z])/g, " $1")
-          .toLowerCase()} is required
-          disabled={!formData.surname}`;
+          .toLowerCase()} is required`;
       }
     });
 
@@ -263,7 +255,9 @@ const QuestionnairePage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateForm()) {
-      alert("Please ensure all required")
+      alert(
+        "Please ensure all required fields are filled and each YES/NO question has exactly one option selected."
+      );
       return;
     }
 
@@ -278,6 +272,7 @@ const QuestionnairePage = () => {
     } catch (error) {
       console.error("Error in handleProceed:", error);
       alert("Error. Please try again");
+      setErrors(error.response?.data?.message || "Error during download. Refresh the page")
     } finally {
       setIsSubmitting(false);
     }
@@ -288,28 +283,6 @@ const QuestionnairePage = () => {
     navigate("/questionnaire-page")
   };
 
-
-  const facultyDepartments = {
-    "Basic Medical Sciences": [
-      "Medicine and Surgery",
-      "Pharmacology"
-    ],
-    "Science": [
-      "Biochemistry",
-      "Microbiology",
-      "Biotechnology and Molecular Biology"
-    ],
-    "Allied Health Sciences": [
-      "Information Technology and Health Informatics",
-      "Audiology",
-      "Nursing Science",
-      "Prosthetics and Orthotics",
-      "Nutrition and Dietetics",
-      "Medical Laboratory Science",
-      "Physiotherapy",
-      "Environmental Health Science"
-    ]
-  }
   return (
     <main className="!bg-white !min-h-screen !flex !flex-col !items-center !py-10 !px-4">
       <div className="!w-full !max-w-4xl !flex !flex-col !gap-8">
@@ -364,7 +337,6 @@ const QuestionnairePage = () => {
                     onChange={handleInputChange}
                     error={errors.surname}
                     required
-                    disabled={!formData.surname}
                   />
                 </div>
                 <div>
@@ -375,7 +347,6 @@ const QuestionnairePage = () => {
                     onChange={handleInputChange}
                     error={errors.otherNames}
                     required
-                    disabled={!formData.otherNames}
                   />
                 </div>
                 <div>
@@ -387,7 +358,6 @@ const QuestionnairePage = () => {
                     onChange={handleInputChange}
                     error={errors.age}
                     required
-                    disabled={!formData.age}
                   />
                 </div>
                 <div>
@@ -399,7 +369,6 @@ const QuestionnairePage = () => {
                     onChange={handleInputChange}
                     error={errors.dob}
                     required
-                    disabled={!formData.dob}
                   />
                 </div>
                 <div>
@@ -411,7 +380,6 @@ const QuestionnairePage = () => {
                     error={errors.sex}
                     options={["Male", "Female", "Other"]}
                     required
-                    disabled={!formData.sex}
                   />
                 </div>
                 <div>
@@ -422,7 +390,6 @@ const QuestionnairePage = () => {
                     onChange={handleInputChange}
                     error={errors.nationality}
                     required
-                    disabled={!formData.nationality}
                   />
                 </div>
                 <div>
@@ -432,47 +399,7 @@ const QuestionnairePage = () => {
                     value={formData.state}
                     onChange={handleInputChange}
                     error={errors.state}
-                    options={[
-                      "Abia",
-                      "Adamawa",
-                      "Akwa Ibom",
-                      "Anambra",
-                      "Bauchi",
-                      "Bayelsa",
-                      "Benue",
-                      "Borno",
-                      "Cross River",
-                      "Delta",
-                      "Ebonyi",
-                      "Edo",
-                      "Ekiti",
-                      "Enugu",
-                      "Gombe",
-                      "Imo",
-                      "Jigawa",
-                      "Kaduna",
-                      "Kano",
-                      "Katsina",
-                      "Kebbi",
-                      "Kogi",
-                      "Kwara",
-                      "Lagos",
-                      "Nasarawa",
-                      "Niger",
-                      "Ogun",
-                      "Ondo",
-                      "Osun",
-                      "Oyo",
-                      "Plateau",
-                      "Rivers",
-                      "Sokoto",
-                      "Taraba",
-                      "Yobe",
-                      "Zamfara",
-                    ]
-                    }
                     required
-                    disabled={!formData.state}
                   />
                 </div>
                 <div>
@@ -484,7 +411,6 @@ const QuestionnairePage = () => {
                     error={errors.maritalStatus}
                     options={["Single", "Married", "Divorced", "Widowed"]}
                     required
-                    disabled={!formData.maritalStatus}
                   />
                 </div>
                 <div>
@@ -494,21 +420,6 @@ const QuestionnairePage = () => {
                     value={formData.faculty}
                     onChange={handleInputChange}
                     error={errors.faculty}
-                    options={Object.keys(facultyDepartments)}
-                    required
-                    disabled={!formData.faculty}
-                  />
-                </div>
-                <div>
-                  <TextInput
-                    label="Department"
-                    name="department"
-                    value={formData.department}
-                    onChange={handleInputChange}
-                    error={errors.department}
-                    options={availableDepartments}
-                    placeholder={!formData.faculty ? "Select a faculty first" : "Select department"}
-                    disabled={!formData.faculty}
                     required
                   />
                 </div>
@@ -520,7 +431,6 @@ const QuestionnairePage = () => {
                     onChange={handleInputChange}
                     error={errors.matricNo}
                     required
-                    disabled={!formData.matricNo}
                   />
                 </div>
                 <div>
@@ -531,7 +441,16 @@ const QuestionnairePage = () => {
                     onChange={handleInputChange}
                     error={errors.jambRegNo}
                     required
-                    disabled={!formData.jambRegNo}
+                  />
+                </div>
+                <div>
+                  <TextInput
+                    label="Department"
+                    name="department"
+                    value={formData.department}
+                    onChange={handleInputChange}
+                    error={errors.department}
+                    required
                   />
                 </div>
                 <div>
@@ -543,7 +462,6 @@ const QuestionnairePage = () => {
                     onChange={handleInputChange}
                     error={errors.telNo}
                     required
-                    disabled={!formData.telNo}
                   />
                 </div>
                 <div>
@@ -555,7 +473,6 @@ const QuestionnairePage = () => {
                     error={errors.religion}
                     options={["Christianity", "Islam", "Traditional", "Other"]}
                     required
-                    disabled={!formData.religion}
                   />
                 </div>
               </div>
@@ -579,7 +496,6 @@ const QuestionnairePage = () => {
                     onChange={handleInputChange}
                     error={errors.nextOfKinName}
                     required
-                    disabled={!formData.nextOfKinName}
                   />
                 </div>
                 <div>
@@ -590,7 +506,6 @@ const QuestionnairePage = () => {
                     onChange={handleInputChange}
                     error={errors.relationship}
                     required
-                    disabled={!formData.relationship}
                   />
                 </div>
                 <div className="!md:col-span-2">
@@ -601,7 +516,6 @@ const QuestionnairePage = () => {
                     onChange={handleInputChange}
                     error={errors.nextOfKinAddress}
                     required
-                    disabled={!formData.nextOfKinAddress}
                   />
                 </div>
                 <div>
@@ -613,7 +527,6 @@ const QuestionnairePage = () => {
                     onChange={handleInputChange}
                     error={errors.nextOfKinTel}
                     required
-                    disabled={!formData.nextOfKinTel}
                   />
                 </div>
               </div>
@@ -978,7 +891,7 @@ const QuestionnairePage = () => {
                   name="height"
                   value={formData.height}
                   onChange={handleInputChange}
-                  type="number"
+                  type="text"
                   disabled
                 />
                 <TextInput
@@ -986,7 +899,7 @@ const QuestionnairePage = () => {
                   name="weight"
                   value={formData.weight}
                   onChange={handleInputChange}
-                  type="number"
+                  type="text"
                   disabled
                 />
                 <TextInput
@@ -1024,7 +937,7 @@ const QuestionnairePage = () => {
                   name="pulseRate"
                   value={formData.pulseRate}
                   onChange={handleInputChange}
-                  type="number"
+                  type="text"
                   disabled
                 />
               </div>

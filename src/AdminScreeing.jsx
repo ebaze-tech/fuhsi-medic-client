@@ -1,36 +1,35 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import API from "../api";
 import { useAuth } from "./AuthContext";
 
 const AdminScreenings = () => {
     const [screenings, setScreenings] = useState([]);
+    const [filteredScreenings, setFilteredScreenings] = useState([]);
+    const [searchQuery, setSearchQuery] = useState("");
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
-    const navigate = useNavigate()
-
-    const { user, isAuthenticated, logout } = useAuth()
+    const navigate = useNavigate();
+    const { user, isAuthenticated, logout } = useAuth();
+    // const { formId } = useParams()
 
     useEffect(() => {
-        console.log(user)
-        console.log(isAuthenticated)
         if (!isAuthenticated) {
-            setError("User not authenticated")
-            setLoading(false)
-            return
-        };
+            setError("User not authenticated");
+            setLoading(false);
+            return;
+        }
 
         const fetchScreenings = async () => {
             try {
-                setLoading(true)
-                const response = await API.get("/admin-dashboard/all-forms")
-                console.log("Form Responses", response.data);
+                setLoading(true);
+                const response = await API.get("/admin-dashboard/all-forms");
                 setScreenings(response.data);
-                setError("")
+                setFilteredScreenings(response.data); // Initialize filtered data
+                setError("");
             } catch (error) {
                 console.error("Error fetching screenings:", error);
                 if (error.response?.status === 401) {
-                    // Token expired or invalid
                     logout();
                     navigate('/login');
                 } else {
@@ -40,11 +39,25 @@ const AdminScreenings = () => {
                 setLoading(false);
             }
         };
-        fetchScreenings()
-    }, [isAuthenticated, user, navigate, logout])
+        fetchScreenings();
+    }, [isAuthenticated, user, navigate, logout]);
+
+    const handleSearch = (e) => {
+        const query = e.target.value.toLowerCase();
+        setSearchQuery(query);
+        const filtered = screenings.filter((student) =>
+            student.surname.toLowerCase().includes(query) ||
+            student.otherNames.toLowerCase().includes(query) ||
+            student.matricNo.toLowerCase().includes(query) ||
+            student.jambRegNo.toLowerCase().includes(query) ||
+            student.faculty.toLowerCase().includes(query) ||
+            student.department.toLowerCase().includes(query) ||
+            student.state.toLowerCase().includes(query)
+        );
+        setFilteredScreenings(filtered);
+    };
 
     if (!isAuthenticated || !user) {
-        // Show loading while redirect happens
         return <div className="!min-h-screen !bg-gray-100 !p-4 sm:!p-8">Loading...</div>;
     }
 
@@ -65,6 +78,17 @@ const AdminScreenings = () => {
                 </Link>
             </div>
 
+            {/* Search Input */}
+            <div className="!mb-6">
+                <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={handleSearch}
+                    placeholder="Search by name, matric no, jamb no, faculty or department..."
+                    className="!w-full !p-3 !border !border-gray-300 !rounded-lg !shadow-sm focus:!outline-none focus:!ring-2 focus:!ring-green-400"
+                />
+            </div>
+
             <div className="!bg-white !p-4 sm:!p-6 !rounded-2xl !shadow-md !overflow-x-auto">
                 {loading ? (
                     <p className="!text-center !text-gray-600">Loading screenings...</p>
@@ -72,13 +96,12 @@ const AdminScreenings = () => {
                     <div className="!flex !flex-col !items-center !justify-center !space-y-4 !mt-8">
                         <p className="!text-red-500 !text-center">{error}</p>
                         <button
-                            // onClick={}
                             className="!px-6 !py-2 !bg-blue-600 !text-white !rounded-lg hover:!bg-blue-700 !transition-all"
                         >
                             Retry
                         </button>
                     </div>
-                ) : screenings.length === 0 ? (
+                ) : filteredScreenings.length === 0 ? (
                     <p className="!text-center !text-gray-600">No screenings found.</p>
                 ) : (
                     <table className="!w-full !text-left !border-collapse min-w-[1000px]">
@@ -105,7 +128,7 @@ const AdminScreenings = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {screenings.map((student) => (
+                            {filteredScreenings.map((student) => (
                                 <tr
                                     key={student._id}
                                     className="hover:!bg-green-50 !transition-all even:!bg-gray-50"
@@ -127,14 +150,18 @@ const AdminScreenings = () => {
                                     <td className="!p-4">{student.nextOfKinName}</td>
                                     <td className="!p-4">{student.relationship}</td>
                                     <td className="!p-4">{student.nextOfKinAddress}</td>
-                                    <button className="!p-4 !w-32 !bg-gray-300 !mt-4 !text-center !font-semibold !rounded-md !cursor-pointer !flex !flex-col !items-center !justify-center !gap-2">
+                                    <td className="!flex !flex-col !items-center !gap-2">
+                                        <Link to={`/questionnaire-page/update/${student._id}`}>
+                                            <button className="!w-32 !bg-gray-300 !text-center !font-semibold !rounded-md !cursor-pointer !p-2 hover:!bg-gray-400">
+                                                Update Form
+                                            </button>
+                                        </Link>
                                         <Link to={`/dashboard/${student._id}`}>
-                                            Update Form
-                                        </Link></button>
-                                    <button className="!p-4 !w-32 !bg-gray-300 !mt-4 !text-center !font-semibold !rounded-md !cursor-pointer">
-                                        <Link to={`/dashboard/${student._id}`}>
-                                            See More
-                                        </Link></button>
+                                            <button className="!w-32 !bg-gray-300 !text-center !font-semibold !rounded-md !cursor-pointer !p-2 hover:!bg-gray-400">
+                                                See More
+                                            </button>
+                                        </Link>
+                                    </td>
                                 </tr>
                             ))}
                         </tbody>

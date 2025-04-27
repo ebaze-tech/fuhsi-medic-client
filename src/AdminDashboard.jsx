@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FiHome, FiUsers, FiCalendar, FiClipboard, FiUserPlus, FiSettings, FiLogOut, FiBell, FiMenu } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "./AuthContext";
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState("overview");
@@ -8,9 +9,26 @@ const AdminDashboard = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
 
+  const { logout } = useAuth()
+
+/*
+        res.setHeader("Content-Type", "application/pdf");
+        res.setHeader(
+            "Content-Disposition",
+            `attachment; filename="${fileName}"`
+        );
+*/
+
   const handleLogout = () => {
-    window.location.href = '/admin/login';
+    logout()
+    if (logout) {
+      navigate("/admin/login")
+    }
   };
+
+  useEffect(() => {
+    setNotifications(5);
+  }, []);
 
   const renderContent = () => {
     switch (activeTab) {
@@ -35,18 +53,18 @@ const AdminDashboard = () => {
         );
       case "students":
         return (
-            <div className="!grid !grid-cols-1 md:!grid-cols-3 !gap-6 !w-full !mt-8 !ml-4">
-              {[
-                { title: "Manage Student Screenings", value: "Click to view submissions", color: "green"},
-                // { title: "New Patients", value: 6, color: "blue" },
-                // { title: "Pending Records", value: 12, color: "yellow" },
-              ].map((item, idx) => (
-                <div key={idx} className="!bg-white !p-6 !rounded-2xl !shadow hover:!shadow-lg !transition" onClick={() => navigate('/admin/screenings')}>
-                  <h3 className="!font-bold">{item.title}</h3>
-                  <p className="!text-black !text-sm !cursor-pointer hover:!bg-gray-300 !w-48 !text-center !bg-gray-500 !p-2 !mt-4">{item.value}</p>
-                </div>
-              ))}
-            </div>
+          <div className="!grid !grid-cols-1 md:!grid-cols-3 !gap-6 !w-full !mt-8 !ml-4">
+            {[
+              { title: "Manage Student Screenings", value: "Click to view submissions", color: "green" },
+              // { title: "New Patients", value: 6, color: "blue" },
+              // { title: "Pending Records", value: 12, color: "yellow" },
+            ].map((item, idx) => (
+              <div key={idx} className="!bg-white !p-6 !rounded-2xl !shadow hover:!shadow-lg !transition" onClick={() => navigate('/admin/screenings')}>
+                <h3 className="!font-bold">{item.title}</h3>
+                <p className="!text-black !text-sm !cursor-pointer hover:!bg-gray-300 !w-48 !text-center !bg-gray-500 !p-2 !mt-4">{item.value}</p>
+              </div>
+            ))}
+          </div>
         );
       case "records":
         return <div className="!p-8 !text-gray-700">Health Records Management</div>;

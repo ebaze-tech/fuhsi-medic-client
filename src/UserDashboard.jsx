@@ -1,14 +1,17 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FiHome, FiUser, FiSettings, FiLogOut, FiBell, FiMessageSquare, FiCalendar, FiPieChart } from "react-icons/fi";
+import { useAuth } from "./AuthContext";
 
 const UserDashboard = () => {
     const [activeTab, setActiveTab] = useState("home");
     const [notifications, setNotifications] = useState(3);
     const [sidebarOpen, setSideBarOpen] = useState(false)
     const navigate = useNavigate();
+    const { logout } = useAuth()
 
     const handleLogout = () => {
+        logout()
         navigate("/user/login");
     };
 
