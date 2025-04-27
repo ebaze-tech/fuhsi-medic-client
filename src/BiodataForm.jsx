@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import API from "../api";
 import "./index.css";
@@ -6,72 +6,75 @@ import { TextInput, YesNoRadioGroup, SelectInput } from "./Components";
 // import {handleDownload}
 import { Disclosure, Transition } from "@headlessui/react";
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/24/outline";
+import { useAuth } from "./AuthContext";
 
 const QuestionnairePage = () => {
+  const { user, isAuthenticated, logout } = useAuth();
+
   const [formData, setFormData] = useState({
-    surname: "John",
-    otherNames: "Doe",
-    age: "20",
-    dob: "20/1/1995",
-    sex: "Male",
-    nationality: "Nigerian",
-    state: "Oyo",
-    maritalStatus: "Single",
-    faculty: "Technology",
-    matricNo: "12345",
-    jambRegNo: "ER1234",
-    department: "BMLS",
-    telNo: "098765",
-    religion: "NONE",
-    nextOfKinName: "NONE",
-    relationship: "NONE",
-    nextOfKinAddress: "NONE",
-    nextOfKinTel: "NONE",
-    tuberculosisYes: true,
+    surname: "",
+    otherNames: "",
+    age: "",
+    dob: "",
+    sex: "",
+    nationality: "",
+    state: "",
+    maritalStatus: "",
+    faculty: "",
+    matricNo: "",
+    jambRegNo: "",
+    department: "",
+    telNo: "",
+    religion: "",
+    nextOfKinName: "",
+    relationship: "",
+    nextOfKinAddress: "",
+    nextOfKinTel: "",
+    tuberculosisYes: false,
     tuberculosisNo: false,
-    asthmaYes: true,
+    asthmaYes: false,
     asthmaNo: false,
-    pepticUlcerYes: true,
+    pepticUlcerYes: false,
     pepticUlcerNo: false,
-    sickleCellYes: true,
+    sickleCellYes: false,
     sickleCellNo: false,
-    allergiesYes: true,
+    allergiesYes: false,
     allergiesNo: false,
-    diabetesYes: true,
+    diabetesYes: false,
     diabetesNo: false,
-    hypertensionYes: true,
+    hypertensionYes: false,
     hypertensionNo: false,
-    seizuresYes: true,
+    seizuresYes: false,
     seizuresNo: false,
-    mentalIllnessYes: true,
+    mentalIllnessYes: false,
     mentalIllnessNo: false,
-    familyTuberculosisYes: true,
+    familyTuberculosisYes: false,
     familyTuberculosisNo: false,
-    familyMentalIllnessYes: true,
+    familyMentalIllnessYes: false,
     familyMentalIllnessNo: false,
-    familyDiabetesYes: true,
+    familyDiabetesYes: false,
     familyDiabetesNo: false,
-    familyHeartDiseaseYes: true,
+    familyHeartDiseaseYes: false,
     familyHeartDiseaseNo: false,
-    smallpoxYes: true,
+    smallpoxYes: false,
     smallpoxNo: false,
-    poliomyelitisYes: true,
+    poliomyelitisYes: false,
     poliomyelitisNo: false,
-    immunizationTuberculosisYes: true,
+    immunizationTuberculosisYes: false,
     immunizationTuberculosisNo: false,
-    meningitisYes: true,
+    meningitisYes: false,
     meningitisNo: false,
-    hpvYes: true,
+    hpvYes: false,
     hpvNo: false,
-    hepatitisBYes: true,
+    hepatitisBYes: false,
     hepatitisBNo: false,
-    tobaccoUseYes: true,
+    tobaccoUseYes: false,
     tobaccoUseNo: false,
-    secondhandSmokeYes: true,
+    secondhandSmokeYes: false,
     secondhandSmokeNo: false,
-    alcoholConsumptionYes: true,
+    alcoholConsumptionYes: false,
     alcoholConsumptionNo: false,
-    tobaccoAlcoholDetails: "NONE",
+    tobaccoAlcoholDetails: "",
     otherMedicalInfo: "NONE",
   });
 
@@ -80,7 +83,13 @@ const QuestionnairePage = () => {
   //   const [sectionBOpen, setSectionBOpen] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [availableDepartments, setAvailableDepartments] = useState([]);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+
+  if (!isAuthenticated || !user) {
+    logout();
+    navigate("/user/login");
+  }
+
   //   const [collapsedSections, setCollapsedSections] = useState({
   //     sectionA: false,
   //     sectionB: false,
@@ -91,11 +100,11 @@ const QuestionnairePage = () => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
 
-    if (name === 'faculty') {
+    if (name === "faculty") {
       const departments = facultyDepartments[value] || [];
       setAvailableDepartments(departments);
       // Reset department when faculty changes
-      setFormData(prev => ({ ...prev, department: '' }));
+      setFormData((prev) => ({ ...prev, department: "" }));
     }
   };
 
@@ -263,7 +272,7 @@ const QuestionnairePage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateForm()) {
-      alert("Please ensure all required")
+      alert("Please ensure all required");
       return;
     }
 
@@ -274,7 +283,7 @@ const QuestionnairePage = () => {
     setShowConfirmation(false);
     setIsSubmitting(true);
     try {
-      navigate("/download-page", { state: { formData } })
+      navigate("/download-page", { state: { formData } });
     } catch (error) {
       console.error("Error in handleProceed:", error);
       alert("Error. Please try again");
@@ -283,33 +292,25 @@ const QuestionnairePage = () => {
     }
   };
 
-  const handleGoBack = () => {
-    setShowConfirmation(false);
-    navigate("/questionnaire-page")
+  const facultyDepartments = {
+    "Basic Medical Sciences": ["Medicine and Surgery", "Pharmacology"],
+    Science: ["Biochemistry", "Microbiology", "Biotechnology"],
+    "Allied Health Sciences": ["Nursing Science", "Medical Laboratory Science"],
   };
 
+  // Update departments when faculty changes
+  useEffect(() => {
+    if (formData.faculty) {
+      const departments = facultyDepartments[formData.faculty] || [];
+      setAvailableDepartments(departments);
+    }
+  }, [formData.faculty]);
 
-  const facultyDepartments = {
-    "Basic Medical Sciences": [
-      "Medicine and Surgery",
-      "Pharmacology"
-    ],
-    "Science": [
-      "Biochemistry",
-      "Microbiology",
-      "Biotechnology and Molecular Biology"
-    ],
-    "Allied Health Sciences": [
-      "Information Technology and Health Informatics",
-      "Audiology",
-      "Nursing Science",
-      "Prosthetics and Orthotics",
-      "Nutrition and Dietetics",
-      "Medical Laboratory Science",
-      "Physiotherapy",
-      "Environmental Health Science"
-    ]
-  }
+  const handleGoBack = () => {
+    setShowConfirmation(false);
+    navigate("/questionnaire-page");
+  };
+
   return (
     <main className="!bg-white !min-h-screen !flex !flex-col !items-center !py-10 !px-4">
       <div className="!w-full !max-w-4xl !flex !flex-col !gap-8">
@@ -364,7 +365,7 @@ const QuestionnairePage = () => {
                     onChange={handleInputChange}
                     error={errors.surname}
                     required
-                    disabled={!formData.surname}
+                    // disabled={!formData.surname}
                   />
                 </div>
                 <div>
@@ -375,7 +376,7 @@ const QuestionnairePage = () => {
                     onChange={handleInputChange}
                     error={errors.otherNames}
                     required
-                    disabled={!formData.otherNames}
+                    // disabled={!formData.otherNames}
                   />
                 </div>
                 <div>
@@ -387,7 +388,7 @@ const QuestionnairePage = () => {
                     onChange={handleInputChange}
                     error={errors.age}
                     required
-                    disabled={!formData.age}
+                    // disabled={!formData.age}
                   />
                 </div>
                 <div>
@@ -399,7 +400,7 @@ const QuestionnairePage = () => {
                     onChange={handleInputChange}
                     error={errors.dob}
                     required
-                    disabled={!formData.dob}
+                    // disabled={!formData.dob}
                   />
                 </div>
                 <div>
@@ -411,7 +412,7 @@ const QuestionnairePage = () => {
                     error={errors.sex}
                     options={["Male", "Female", "Other"]}
                     required
-                    disabled={!formData.sex}
+                    // disabled={!formData.sex}
                   />
                 </div>
                 <div>
@@ -422,7 +423,7 @@ const QuestionnairePage = () => {
                     onChange={handleInputChange}
                     error={errors.nationality}
                     required
-                    disabled={!formData.nationality}
+                    // disabled={!formData.nationality}
                   />
                 </div>
                 <div>
@@ -469,10 +470,9 @@ const QuestionnairePage = () => {
                       "Taraba",
                       "Yobe",
                       "Zamfara",
-                    ]
-                    }
+                    ]}
                     required
-                    disabled={!formData.state}
+                    // disabled={!formData.state}
                   />
                 </div>
                 <div>
@@ -484,7 +484,7 @@ const QuestionnairePage = () => {
                     error={errors.maritalStatus}
                     options={["Single", "Married", "Divorced", "Widowed"]}
                     required
-                    disabled={!formData.maritalStatus}
+                    // disabled={!formData.maritalStatus}
                   />
                 </div>
                 <div>
@@ -496,7 +496,7 @@ const QuestionnairePage = () => {
                     error={errors.faculty}
                     options={Object.keys(facultyDepartments)}
                     required
-                    disabled={!formData.faculty}
+                    // disabled={!formData.faculty}
                   />
                 </div>
                 <div>
@@ -507,8 +507,13 @@ const QuestionnairePage = () => {
                     onChange={handleInputChange}
                     error={errors.department}
                     options={availableDepartments}
-                    placeholder={!formData.faculty ? "Select a faculty first" : "Select department"}
-                    disabled={!formData.faculty}
+                    placeholder={
+                      !formData.faculty
+                        ? "Select faculty first"
+                        : "Select department"
+                    }
+                    required
+                    // disabled={!formData.faculty}
                     required
                   />
                 </div>
@@ -520,7 +525,7 @@ const QuestionnairePage = () => {
                     onChange={handleInputChange}
                     error={errors.matricNo}
                     required
-                    disabled={!formData.matricNo}
+                    // disabled={!formData.matricNo}
                   />
                 </div>
                 <div>
@@ -531,7 +536,7 @@ const QuestionnairePage = () => {
                     onChange={handleInputChange}
                     error={errors.jambRegNo}
                     required
-                    disabled={!formData.jambRegNo}
+                    // disabled={!formData.jambRegNo}
                   />
                 </div>
                 <div>
@@ -543,7 +548,7 @@ const QuestionnairePage = () => {
                     onChange={handleInputChange}
                     error={errors.telNo}
                     required
-                    disabled={!formData.telNo}
+                    // disabled={!formData.telNo}
                   />
                 </div>
                 <div>
@@ -555,7 +560,7 @@ const QuestionnairePage = () => {
                     error={errors.religion}
                     options={["Christianity", "Islam", "Traditional", "Other"]}
                     required
-                    disabled={!formData.religion}
+                    // disabled={!formData.religion}
                   />
                 </div>
               </div>
@@ -579,7 +584,7 @@ const QuestionnairePage = () => {
                     onChange={handleInputChange}
                     error={errors.nextOfKinName}
                     required
-                    disabled={!formData.nextOfKinName}
+                    // disabled={!formData.nextOfKinName}
                   />
                 </div>
                 <div>
@@ -590,7 +595,7 @@ const QuestionnairePage = () => {
                     onChange={handleInputChange}
                     error={errors.relationship}
                     required
-                    disabled={!formData.relationship}
+                    // disabled={!formData.relationship}
                   />
                 </div>
                 <div className="!md:col-span-2">
@@ -601,7 +606,7 @@ const QuestionnairePage = () => {
                     onChange={handleInputChange}
                     error={errors.nextOfKinAddress}
                     required
-                    disabled={!formData.nextOfKinAddress}
+                    // disabled={!formData.nextOfKinAddress}
                   />
                 </div>
                 <div>
@@ -613,7 +618,7 @@ const QuestionnairePage = () => {
                     onChange={handleInputChange}
                     error={errors.nextOfKinTel}
                     required
-                    disabled={!formData.nextOfKinTel}
+                    // disabled={!formData.nextOfKinTel}
                   />
                 </div>
               </div>
@@ -929,20 +934,20 @@ const QuestionnairePage = () => {
               {(formData.tobaccoUseYes ||
                 formData.secondhandSmokeYes ||
                 formData.alcoholConsumptionYes) && (
-                  <TextInput
-                    label="If the answer to any of the above is YES, provide details:"
-                    name="tobaccoAlcoholDetails"
-                    value={formData.tobaccoAlcoholDetails}
-                    onChange={handleInputChange}
-                    error={errors.tobaccoAlcoholDetails}
-                    className="bg-white"
-                    required={
-                      formData.tobaccoUseYes ||
-                      formData.secondhandSmokeYes ||
-                      formData.alcoholConsumptionYes
-                    }
-                  />
-                )}
+                <TextInput
+                  label="If the answer to any of the above is YES, provide details:"
+                  name="tobaccoAlcoholDetails"
+                  value={formData.tobaccoAlcoholDetails}
+                  onChange={handleInputChange}
+                  error={errors.tobaccoAlcoholDetails}
+                  className="bg-white"
+                  required={
+                    formData.tobaccoUseYes ||
+                    formData.secondhandSmokeYes ||
+                    formData.alcoholConsumptionYes
+                  }
+                />
+              )}
 
               <TextInput
                 label="If there is any other medical information not stated above, please provide details:"

@@ -1,47 +1,48 @@
-import React, { useState, useEffect } from 'react';
-import { useAuth } from './AuthContext';
-import API from '../api';
-import { useNavigate, Link } from 'react-router-dom';
-import { FaExclamationCircle, FaSpinner, FaUser } from 'react-icons/fa';
-import { FiUser, FiHash } from 'react-icons/fi';
-import Logo from '/fuhsi_logo.png';
-import BgImage from '/fuhs-3.jpg';
+import React, { useState, useEffect } from "react";
+import { useAuth } from "./AuthContext";
+import API from "../api";
+import { useNavigate, Link } from "react-router-dom";
+import { FaExclamationCircle, FaSpinner, FaUser } from "react-icons/fa";
+import { FiUser, FiMail } from "react-icons/fi";
+import Logo from "/fuhsi_logo.png";
+import BgImage from "/fushi.webp";
 const AdminLogin = () => {
   const { login, isAuthenticated } = useAuth();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [isFocused, setIsFocused] = useState({
     email: false,
-    password: false
+    password: false,
   });
   const navigate = useNavigate();
 
   useEffect(() => {
     if (isAuthenticated) {
-      navigate('/dashboard/admin');
+      navigate("/dashboard/admin");
     }
   }, [isAuthenticated, navigate]);
 
   const validateField = (name, value) => {
     const newErrors = { ...errors };
 
-    if (name === 'email') {
+    if (name === "email") {
       if (!value) {
-        newErrors.email = 'Email is required';
+        newErrors.email = "Email is required";
       } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
-        newErrors.email = 'Please enter a valid email address (e.g., user@example.com)';
+        newErrors.email =
+          "Please enter a valid email address (e.g., user@example.com)";
       } else {
         delete newErrors.email;
       }
     }
 
-    if (name === 'password') {
+    if (name === "password") {
       if (!value) {
-        newErrors.password = 'Password is required';
+        newErrors.password = "Password is required";
       } else if (value.length < 8) {
-        newErrors.password = 'Password must be at least 8 characters';
+        newErrors.password = "Password must be at least 8 characters";
       } else {
         delete newErrors.password;
       }
@@ -52,8 +53,8 @@ const AdminLogin = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    if (name === 'email') setEmail(value);
-    if (name === 'password') setPassword(value);
+    if (name === "email") setEmail(value);
+    if (name === "password") setPassword(value);
     validateField(name, value);
   };
 
@@ -63,13 +64,13 @@ const AdminLogin = () => {
 
   const handleBlur = (field) => {
     setIsFocused({ ...isFocused, [field]: false });
-    validateField(field, field === 'email' ? email : password);
+    validateField(field, field === "email" ? email : password);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    validateField('email', email);
-    validateField('password', password);
+    validateField("email", email);
+    validateField("password", password);
 
     if (Object.keys(errors).length > 0 || !email || !password) return;
 
@@ -77,12 +78,13 @@ const AdminLogin = () => {
     setErrors({});
 
     try {
-      const { data } = await API.post('/auth/admin/login', { password, email });
+      const { data } = await API.post("/auth/admin/login", { password, email });
       login(data.token, data.user);
-      navigate('/dashboard/admin');
+      navigate("/dashboard/admin");
     } catch (error) {
       setErrors({
-        form: error.response?.data?.message || 'Login failed. Please try again.',
+        form:
+          error.response?.data?.message || "Login failed. Please try again.",
       });
     } finally {
       setLoading(false);
@@ -124,32 +126,6 @@ const AdminLogin = () => {
 
             <form onSubmit={handleSubmit} className="!space-y-5">
               {/* password Field */}
-              <div>
-                <label className="!block !text-sm !font-medium !text-gray-700 !mb-1">
-                  Password
-                </label>
-                <div className="!relative">
-                  <div className={`!absolute !inset-y-0 !left-0 !pl-3 !flex !items-center !pointer-events-none ${isFocused.password ? '!text-blue-600' : '!text-gray-400'
-                    }`}>
-                    <FiUser size={18} />
-                  </div>
-                  <input
-                    type="password"
-                    name="password"
-                    value={password}
-                    onChange={handleChange}
-                    onFocus={() => handleFocus('password')}
-                    onBlur={() => handleBlur('password')}
-                    placeholder="Enter your password"
-                    className={`!w-full !pl-10 !pr-4 !py-3 !border ${errors.password ? '!border-red-500' : '!border-gray-300'
-                      } !rounded-lg !focus:outline-none !focus:ring-2 ${errors.password ? '!focus:ring-red-500' : '!focus:ring-blue-500'
-                      } !focus:border-transparent !transition`}
-                  />
-                </div>
-                {errors.password && (
-                  <p className="!mt-1 !text-sm !text-red-600">{errors.password}</p>
-                )}
-              </div>
 
               {/* UTME Number Field */}
               <div>
@@ -157,25 +133,68 @@ const AdminLogin = () => {
                   Email
                 </label>
                 <div className="!relative">
-                  <div className={`!absolute !inset-y-0 !left-0 !pl-3 !flex !items-center !pointer-events-none ${isFocused.email ? '!text-blue-600' : '!text-gray-400'
-                    }`}>
-                    <FiHash size={18} />
+                  <div
+                    className={`!absolute !inset-y-0 !left-0 !pl-3 !flex !items-center !pointer-events-none ${
+                      isFocused.email ? "!text-blue-600" : "!text-gray-400"
+                    }`}
+                  >
+                    <FiMail size={18} />
                   </div>
                   <input
                     type="text"
                     name="email"
                     value={email}
                     onChange={handleChange}
-                    onFocus={() => handleFocus('email')}
-                    onBlur={() => handleBlur('email')}
+                    onFocus={() => handleFocus("email")}
+                    onBlur={() => handleBlur("email")}
                     placeholder="Input your email."
-                    className={`!w-full !pl-10 !pr-4 !py-3 !border ${errors.email ? '!border-red-500' : '!border-gray-300'
-                      } !rounded-lg !focus:outline-none !focus:ring-2 ${errors.email ? '!focus:ring-red-500' : '!focus:ring-blue-500'
-                      } !focus:border-transparent !lowercase !transition`}
+                    className={`!w-full !pl-10 !pr-4 !py-3 !border ${
+                      errors.email ? "!border-red-500" : "!border-gray-300"
+                    } !rounded-lg !focus:outline-none !focus:ring-2 ${
+                      errors.email
+                        ? "!focus:ring-red-500"
+                        : "!focus:ring-blue-500"
+                    } !focus:border-transparent !lowercase !transition`}
                   />
                 </div>
                 {errors.email && (
                   <p className="!mt-1 !text-sm !text-red-600">{errors.email}</p>
+                )}
+              </div>
+
+              <div>
+                <label className="!block !text-sm !font-medium !text-gray-700 !mb-1">
+                  Password
+                </label>
+                <div className="!relative">
+                  <div
+                    className={`!absolute !inset-y-0 !left-0 !pl-3 !flex !items-center !pointer-events-none ${
+                      isFocused.password ? "!text-blue-600" : "!text-gray-400"
+                    }`}
+                  >
+                    <FiUser size={18} />
+                  </div>
+                  <input
+                    type="password"
+                    name="password"
+                    value={password}
+                    onChange={handleChange}
+                    onFocus={() => handleFocus("password")}
+                    onBlur={() => handleBlur("password")}
+                    placeholder="Enter your password"
+                    className={`!w-full !pl-10 !pr-4 !py-3 !border ${
+                      errors.password ? "!border-red-500" : "!border-gray-300"
+                    } !rounded-lg !focus:outline-none !focus:ring-2 ${
+                      errors.password
+                        ? "!focus:ring-red-500"
+                        : "!focus:ring-blue-500"
+                    } !focus:border-transparent !transition`}
+                  />
+                </div>
+                {errors.password && (
+                  <p className="!mt-1 !text-sm !text-red-600">
+                    {errors.password}
+                  </p>
                 )}
               </div>
 
@@ -199,19 +218,20 @@ const AdminLogin = () => {
             </form>
 
             <div className="!mt-6 !text-center">
-              <Link
-                to="/help"
+              <a
+                href="mailto:helpdesk@fuhsi.edu.ng"
                 className="!text-sm !text-blue-700 !font-medium !hover:!text-blue-800 !hover:!underline !transition"
               >
                 Need help? Contact Support
-              </Link>
+              </a>
             </div>
           </div>
         </div>
       </main>
 
       <footer className="!mt-8 !text-white !text-sm !text-center !z-10 !px-4">
-        &copy; {new Date().getFullYear()} Federal University of Health Sciences, Ila Orangun. All rights reserved.
+        &copy; {new Date().getFullYear()} Federal University of Health Sciences,
+        Ila Orangun. All rights reserved.
       </footer>
     </div>
   );

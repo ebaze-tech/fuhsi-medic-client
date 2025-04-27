@@ -13,6 +13,8 @@ import AdminViewForm from "./AdminViewForm";
 import UpdateQuestionnairePage from "./AdminEditForm";
 import NotFoundPage from "./NotFound";
 import StudentScreenings from "./StudentScreening";
+import UserScreeningForm from "./UserScreeningForm";
+import StudentViewForm from "./StudentViewForm";
 // import SubmissionPage from "./components/SubmissionPage";
 
 function App() {
@@ -25,7 +27,7 @@ function App() {
 
           <Route path="/completed-page" element={<CompletedPage />} />
           <Route path="/completed-page/:formId" element={<CompletedPage />} />
-          <Route path="/dashboard/user/:formId" element={<UserDashboard />} />
+          <Route path="/dashboard/user" element={<UserDashboard />} />
           <Route path="/dashboard/admin" element={<AdminDashboard />} />
           <Route
             path="/download-page" element={<SubmissionPage />} />
@@ -50,9 +52,11 @@ function App() {
             element={<AdminLogin />}
           />
           <Route path="/admin/screenings" element={<AdminScreenings />} />
+          <Route path="/user/screenings" element={<UserScreeningForm />} />
           {/* <Route path="/student/screenings" element={<StudentScreenings />} /> */}
           <Route path="/dashboard/form/student/:formId" element={<StudentScreenings />} />
           <Route path={'/dashboard/:formId'} element={<AdminViewForm />} />
+          <Route path={'/dashboard/student-form/:formId'} element={<StudentViewForm />} />
         </Routes>
       </div>
     </AuthProvider>
