@@ -34,6 +34,10 @@ function App() {
             element={<NotFoundPage />}
           />
           <Route
+            path="*"
+            element={<NotFoundPage />}
+          />
+          <Route
             path="/user/login"
             element={<UserLogin />}
           />
