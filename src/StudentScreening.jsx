@@ -64,7 +64,7 @@ const StudentScreenings = () => {
     }, [isAuthenticated, formId, navigate, logout]);
 
     const handleDownloadPdf = async () => {
-        setLoading(true)
+        setPdfLoading(true)
         try {
             setPdfLoading(true)
             setPdfError("")

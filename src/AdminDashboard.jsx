@@ -75,7 +75,7 @@ const AdminDashboard = () => {
             ].map((item, idx) => (
               <div key={idx} className="!bg-white !p-6 !rounded-2xl !shadow hover:!shadow-lg !transition" onClick={() => navigate('/admin/screenings')}>
                 <h3 className="!font-bold">{item.title}</h3>
-                <p className="!text-black !text-sm !cursor-pointer hover:!bg-gray-300 !w-48 !text-center !bg-gray-500 !p-2 !mt-4">{item.value}</p>
+                <p className="!text-black !text-sm !cursor-pointer hover:!bg-gray-400 !w-48 !text-center !bg-gray-300 !p-2 !mt-4">{item.value}</p>
               </div>
             ))}
           </div>
