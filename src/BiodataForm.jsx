@@ -157,8 +157,7 @@ const QuestionnairePage = () => {
       if (!formData[field]) {
         newErrors[field] = `${field
           .replace(/([A-Z])/g, " $1")
-          .toLowerCase()} is required
-          disabled={!formData.surname}`;
+          .toLowerCase()} is required`;
       }
     });
 
@@ -514,7 +513,6 @@ const QuestionnairePage = () => {
                     }
                     required
                     // disabled={!formData.faculty}
-                    required
                   />
                 </div>
                 <div>
