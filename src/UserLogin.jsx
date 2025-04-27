@@ -1,16 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { useAuth } from './AuthContext';
-import API from '../api';
-import { useNavigate, Link } from 'react-router-dom';
-import { FaExclamationCircle, FaSpinner, FaUser } from 'react-icons/fa';
-import { FiUser, FiHash } from 'react-icons/fi';
-import Logo from '/fuhsi_logo.png';
-import BgImage from '/fuhs-3.jpg';
+import React, { useState, useEffect } from "react";
+import { useAuth } from "./AuthContext";
+import API from "../api";
+import { useNavigate, Link } from "react-router-dom";
+import { FaExclamationCircle, FaSpinner, FaUser } from "react-icons/fa";
+import { FiUser, FiHash } from "react-icons/fi";
+import Logo from "/fuhsi_logo.png";
+import BgImage from "/fushi.webp";
 
 const UserLogin = () => {
   const { login, isAuthenticated } = useAuth();
-  const [utmeNo, setUtmeNo] = useState('');
-  const [surname, setSurname] = useState('');
+  const [utmeNo, setUtmeNo] = useState("");
+  const [surname, setSurname] = useState("");
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [isFocused, setIsFocused] = useState({
@@ -21,26 +21,28 @@ const UserLogin = () => {
 
   useEffect(() => {
     if (isAuthenticated) {
-      navigate('/dashboard/user');
+      navigate("/dashboard/user");
     }
   }, [isAuthenticated, navigate]);
 
   const validateField = (name, value) => {
     const newErrors = { ...errors };
 
-    if (name === 'utmeNo') {
+    if (name === "utmeNo") {
       if (!value) {
-        newErrors.utmeNo = 'JAMB Number is required';
+        newErrors.utmeNo = "UTME Number is required";
       } else if (!/^\d{8}[A-Z]{2}$/.test(value)) {
-        newErrors.utmeNo = 'Format: 8 digits + 2 uppercase letters (e.g., 12345678AB)';
+        newErrors.utmeNo =
+          "Format: 12 digits + 2 uppercase letters (e.g., 12345678AB)";
       } else {
         delete newErrors.utmeNo;
       }
     }
 
-    if (name === 'surname') {
-      if (!value) newErrors.surname = 'Surname is required';
-      else if (value.length < 2) newErrors.surname = 'Surname must be at least 2 characters';
+    if (name === "surname") {
+      if (!value) newErrors.surname = "Surname is required";
+      else if (value.length < 2)
+        newErrors.surname = "Surname must be at least 2 characters";
       else delete newErrors.surname;
     }
     setErrors(newErrors);
@@ -48,8 +50,8 @@ const UserLogin = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    if (name === 'utmeNo') setUtmeNo(value);
-    if (name === 'surname') setSurname(value);
+    if (name === "utmeNo") setUtmeNo(value);
+    if (name === "surname") setSurname(value);
     validateField(name, value);
   };
 
@@ -59,17 +61,17 @@ const UserLogin = () => {
 
   const handleBlur = (field) => {
     setIsFocused({ ...isFocused, [field]: false });
-    validateField(field, field === 'utmeNo' ? utmeNo : surname);
+    validateField(field, field === "utmeNo" ? utmeNo : surname);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    validateField('utmeNo', utmeNo);
-    validateField('surname', surname);
+    validateField("utmeNo", utmeNo);
+    validateField("surname", surname);
 
     const currentErrors = {};
-    if (!utmeNo) currentErrors.utmeNo = 'UTME Number is required';
-    if (!surname) currentErrors.surname = 'Surname is required';
+    if (!utmeNo) currentErrors.utmeNo = "UTME Number is required";
+    if (!surname) currentErrors.surname = "Surname is required";
 
     if (Object.keys(currentErrors).length > 0) {
       setErrors(currentErrors);
@@ -80,23 +82,28 @@ const UserLogin = () => {
     setErrors({});
 
     try {
-      const response = await API.post('/auth/user/login', { surname: surname.trim(), utmeNo: utmeNo.trim() });
-      console.log('API data:', response); // Debug
+      const response = await API.post("/auth/user/login", {
+        surname: surname.trim(),
+        utmeNo: utmeNo.trim(),
+      });
+      console.log("API data:", response); // Debug
       const responseData = response.data?.data || response.data;
 
       if (!responseData?.token || !responseData?.user) {
-        throw new Error('Invalid response from server');
+        throw new Error("Invalid response from server");
       }
       login(responseData.token, responseData.user);
-      console.log('handleSubmit: Login successful, navigating to dashboard');
-      setTimeout(() => navigate('/dashboard/user', { replace: true }), 0);
+      console.log("handleSubmit: Login successful, navigating to dashboard");
+      setTimeout(() => navigate("/dashboard/user", { replace: true }), 0);
     } catch (error) {
-      console.error('handleSubmit: Login error:', error);
+      console.error("handleSubmit: Login error:", error);
       setErrors({
-        form: error.response?.data?.message || 'Login failed. Please try again.',
+        form:
+          error.response?.data?.message || "Login failed. Please try again.",
       });
     } finally {
-      setLoading(false); console.log('handleSubmit: Loading state reset');
+      setLoading(false);
+      console.log("handleSubmit: Loading state reset");
     }
   };
 
@@ -140,8 +147,11 @@ const UserLogin = () => {
                   Surname
                 </label>
                 <div className="!relative">
-                  <div className={`!absolute !inset-y-0 !left-0 !pl-3 !flex !items-center !pointer-events-none ${isFocused.surname ? '!text-blue-600' : '!text-gray-400'
-                    }`}>
+                  <div
+                    className={`!absolute !inset-y-0 !left-0 !pl-3 !flex !items-center !pointer-events-none ${
+                      isFocused.surname ? "!text-blue-600" : "!text-gray-400"
+                    }`}
+                  >
                     <FiUser size={18} />
                   </div>
                   <input
@@ -149,16 +159,22 @@ const UserLogin = () => {
                     name="surname"
                     value={surname}
                     onChange={handleChange}
-                    onFocus={() => handleFocus('surname')}
-                    onBlur={() => handleBlur('surname')}
-                    placeholder="Enter your surname"
-                    className={`!w-full !pl-10 !pr-4 !py-3 !border ${errors.surname ? '!border-red-500' : '!border-gray-300'
-                      } !rounded-lg !focus:outline-none !focus:ring-2 ${errors.surname ? '!focus:ring-red-500' : '!focus:ring-blue-500'
-                      } !focus:border-transparent !transition`}
+                    onFocus={() => handleFocus("surname")}
+                    onBlur={() => handleBlur("surname")}
+                    placeholder="Enter your surname in capital letters"
+                    className={`!w-full !pl-10 !pr-4 !py-3 !border ${
+                      errors.surname ? "!border-red-500" : "!border-gray-300"
+                    } !rounded-lg !focus:outline-none !focus:ring-2 ${
+                      errors.surname
+                        ? "!focus:ring-red-500"
+                        : "!focus:ring-blue-500"
+                    } !focus:border-transparent !transition`}
                   />
                 </div>
                 {errors.surname && (
-                  <p className="!mt-1 !text-sm !text-red-600">{errors.surname}</p>
+                  <p className="!mt-1 !text-sm !text-red-600">
+                    {errors.surname}
+                  </p>
                 )}
               </div>
 
@@ -168,8 +184,11 @@ const UserLogin = () => {
                   UTME Number
                 </label>
                 <div className="!relative">
-                  <div className={`!absolute !inset-y-0 !left-0 !pl-3 !flex !items-center !pointer-events-none ${isFocused.utmeNo ? '!text-blue-600' : '!text-gray-400'
-                    }`}>
+                  <div
+                    className={`!absolute !inset-y-0 !left-0 !pl-3 !flex !items-center !pointer-events-none ${
+                      isFocused.utmeNo ? "!text-blue-600" : "!text-gray-400"
+                    }`}
+                  >
                     <FiHash size={18} />
                   </div>
                   <input
@@ -177,16 +196,22 @@ const UserLogin = () => {
                     name="utmeNo"
                     value={utmeNo}
                     onChange={handleChange}
-                    onFocus={() => handleFocus('utmeNo')}
-                    onBlur={() => handleBlur('utmeNo')}
+                    onFocus={() => handleFocus("utmeNo")}
+                    onBlur={() => handleBlur("utmeNo")}
                     placeholder="e.g. 12345678AB"
-                    className={`!w-full !pl-10 !pr-4 !py-3 !border ${errors.utmeNo ? '!border-red-500' : '!border-gray-300'
-                      } !rounded-lg !focus:outline-none !focus:ring-2 ${errors.utmeNo ? '!focus:ring-red-500' : '!focus:ring-blue-500'
-                      } !focus:border-transparent !uppercase !transition`}
+                    className={`!w-full !pl-10 !pr-4 !py-3 !border ${
+                      errors.utmeNo ? "!border-red-500" : "!border-gray-300"
+                    } !rounded-lg !focus:outline-none !focus:ring-2 ${
+                      errors.utmeNo
+                        ? "!focus:ring-red-500"
+                        : "!focus:ring-blue-500"
+                    } !focus:border-transparent !uppercase !transition`}
                   />
                 </div>
                 {errors.utmeNo && (
-                  <p className="!mt-1 !text-sm !text-red-600">{errors.utmeNo}</p>
+                  <p className="!mt-1 !text-sm !text-red-600">
+                    {errors.utmeNo}
+                  </p>
                 )}
               </div>
 
@@ -210,19 +235,20 @@ const UserLogin = () => {
             </form>
 
             <div className="!mt-6 !text-center">
-              <Link
-                to="/help"
+              <a
+                href="mailto:helpdesk@fuhsi.edu.ng"
                 className="!text-sm !text-blue-700 !font-medium !hover:!text-blue-800 !hover:!underline !transition"
               >
                 Need help? Contact Support
-              </Link>
+              </a>
             </div>
           </div>
         </div>
       </main>
 
       <footer className="!mt-8 !text-white !text-sm !text-center !z-10 !px-4">
-        &copy; {new Date().getFullYear()} Federal University of Health Sciences, Ila Orangun. All rights reserved.
+        &copy; {new Date().getFullYear()} Federal University of Health Sciences,
+        Ila Orangun. All rights reserved.
       </footer>
     </div>
   );

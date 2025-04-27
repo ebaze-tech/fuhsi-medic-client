@@ -69,7 +69,7 @@ const SubmissionPage = () => {
       navigate("/completed-page");
     } catch (error) {
       console.error("Error generating PDF:", error);
-      alert("Error generating PDF. Please try again.");
+      alert("Error generating PDF. Please try again.",error);
     } finally {
       setIsLoading(false);
     }

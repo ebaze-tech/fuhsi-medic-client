@@ -27,20 +27,22 @@ const CompletedPage = () => {
     }, []);
 
     const handleGoHome = () => {
-        const token = localStorage.getItem("token")
-        const user = JSON.parse(localStorage.getItem("user"))
-
+        const token = localStorage.getItem("token");
+        const user = JSON.parse(localStorage.getItem("user") || "null");
+    
         if (!token || !user) {
-            navigate("/")
-            return
+            navigate("/");
+            return;
         }
-
-        const isAdmin = user.email.endsWith("@admin.test") || user.email === "admin@admin.test"
+    
+        const isAdmin = user.email?.endsWith("@admin.test") || user.email === "admin@admin.test";
         navigate(isAdmin ? "/dashboard/admin" : "/dashboard/user");
     };
+    
     const handleGoBack = () => {
-        navigate(-2)
-    }
+        navigate(-1);
+    };
+    
 
     return (
         <div className="!min-h-screen !flex !items-center !justify-center !bg-green-50">
