@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { FiHome, FiUsers, FiCalendar, FiClipboard, FiUserPlus, FiSettings, FiLogOut, FiBell, FiMenu } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "./AuthContext";
+import API from "../api";
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState("overview");
@@ -11,14 +12,6 @@ const AdminDashboard = () => {
 
   const { logout } = useAuth()
 
-/*
-        res.setHeader("Content-Type", "application/pdf");
-        res.setHeader(
-            "Content-Disposition",
-            `attachment; filename="${fileName}"`
-        );
-*/
-
   const handleLogout = () => {
     logout()
     if (logout) {
@@ -27,7 +20,28 @@ const AdminDashboard = () => {
   };
 
   useEffect(() => {
-    setNotifications(5);
+
+    const verifyToken = async () => {
+      const token = localStorage.getItem("token")
+      if (!token) {
+        navigate("/admin/login")
+        return
+      }
+
+      try {
+        const response = await API.get("/auth/verify/admin")
+        console.log(response.data)
+      } catch (error) {
+        if (error.response && (error.response.status === 401 || error.response.status === 403)) {
+          handleLogout();
+        } else {
+          console.error("Unexpected error:", error.message);
+        }
+      }
+
+    }
+
+    verifyToken()
   }, []);
 
   const renderContent = () => {
@@ -90,7 +104,7 @@ const AdminDashboard = () => {
       {/* Sidebar */}
       <aside className={`!bg-white !shadow-lg !flex !flex-col !fixed md:!relative !top-0 !h-full !transition-all !duration-300 z-50 ${menuOpen ? "!left-0" : "!-left-[16rem]"} md:!left-0 !w-64`}>
         <div className="!p-6 !border-b">
-          <h1 className="!text-2xl !font-bold !text-green-600">FUHMS Admin</h1>
+          <h1 className="!text-2xl !font-bold !text-green-600">FUHS Admin</h1>
         </div>
         <nav className="!flex-1 !p-4 !space-y-4">
           {[
@@ -133,7 +147,7 @@ const AdminDashboard = () => {
             <button onClick={() => setMenuOpen(!menuOpen)} className="!p-2 !rounded-md hover:!bg-gray-100 md:!hidden">
               <FiMenu className="!w-6 !h-6" />
             </button>
-            <h2 className="!text-lg sm:!text-xl !font-bold !text-gray-700 text-center flex-1">Federal University of Health Management Sciences</h2>
+            <h2 className="!text-lg sm:!text-xl !font-bold !text-gray-700 text-center flex-1">Federal University of Health Sciences, Ila Orangun</h2>
             <div className="!flex !items-center !space-x-4">
               <button className="!relative !p-2 !rounded-full hover:!bg-gray-100">
                 <FiBell className="!w-6 !h-6" />

@@ -1,27 +1,28 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams ,useLocation} from "react-router-dom";
 import API from "../api";
 import { useAuth } from "./AuthContext";
 
-const AdminViewForm = () => {
-    const [screening, setScreening] = useState(null);
+const StudentScreenings = () => {
+    const [screenings, setScreenings] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
-    const [pdfLoading, setPdfLoading] = useState(false);
-    const [pdfError, setPdfError] = useState("");
-    const [submissionStatus, setSubmissionStatus] = useState("pending");
-    const [progress, setProgress] = useState(0);
+    const [progress, setProgress] = useState(0)
+    const [pdfLoading, setPdfLoading] = useState(false)
+    const [pdfError, setPdfError] = useState("")
+    const [submissionStatus, setSubmissionStatus] = useState("pending")
     const navigate = useNavigate();
+    // const location = useLocation()
+    const { formId } = useParams()
 
     const { user, isAuthenticated, logout } = useAuth();
-    const { formId } = useParams();
 
     useEffect(() => {
         if (!isAuthenticated) {
             setError("User not authenticated");
             setLoading(false);
             return;
-        };
+        }
 
         const progressInterval = setInterval(() => {
             setProgress((prev) => {
@@ -33,69 +34,71 @@ const AdminViewForm = () => {
             });
         }, 30);
 
-        const fetchScreening = async () => {
+        // if(!loca)
+
+        const fetchScreenings = async () => {
             try {
                 setLoading(true);
                 const response = await API.get(`/dashboard/form/${formId}`);
                 console.log("Form Response", response.data)
-                setScreening(response.data);
+                setScreenings(response.data);
                 setError("");
             } catch (error) {
-                console.error("Error fetching screening:", error);
+                console.error("Error fetching screenings:", error);
                 if (error.response?.status === 401) {
                     logout();
-                    navigate('/admin/login');
+                    navigate('/user/login');
                 } else {
-                    setError(error.response?.data?.message || "Failed to load screening. Please try again.");
+                    setError(error.response?.data?.message || "Failed to load screenings. Please try again.");
                 }
             } finally {
+                setPdfLoading(false);
                 setLoading(false);
             }
         };
-
-        fetchScreening();
+        fetchScreenings();
 
         return () => {
-            clearInterval(progressInterval);
-        };
+            clearInterval(progressInterval)
+        }
     }, [isAuthenticated, formId, navigate, logout]);
 
     const handleDownloadPdf = async () => {
         setLoading(true)
         try {
-            setPdfLoading(true);
-            setPdfError("");
+            setPdfLoading(true)
+            setPdfError("")
 
             const response = await API.get(`/questionnaire/${formId}/download`, {
-                responseType: 'blob'
-            });
-
+                responseType: "blob"
+            })
             console.log(response.data)
 
-            const blob = new Blob([response.data]);
+            const blob = new Blob([response.data])
 
-            // Create download link
-            const url = window.URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.setAttribute('download', `${formId}-questionnaire-response.pdf`);
-            document.body.appendChild(link);
-            link.click();
+            const url = window.URL.createObjectURL(blob)
+            const link = document.createElement('a')
+            link.href = url
+            link.setAttribute('download', `${formId}-questionnaire-response.pdf`)
+            document.body.appendChild(link)
+            link.click()
 
             setTimeout(() => {
-                document.body.removeChild(link);
-                window.URL.revokeObjectURL(url);
-            }, 100);
+                document.body.removeChild(link)
+                window.URL.revokeObjectURL(url)
+            }, 100)
 
-            setSubmissionStatus("completed");
+            setSubmissionStatus("completed")
             navigate(`/completed-page/${formId}`)
         } catch (error) {
             console.error("Error downloading PDF:", error);
             setPdfError(error.response?.data?.message || "Error generating PDF. Please try again");
         } finally {
+            setLoading(false);
             setPdfLoading(false);
         }
-    };
+
+    }
 
     const handleGoBack = () => {
         navigate(-2);
@@ -106,21 +109,32 @@ const AdminViewForm = () => {
     }
 
     return (
-        <div className="!min-h-screen !bg-gray-100 !p-4 sm:!p-8">
+        <div className="!min-h-screen !bg-gray-50 !p-6 sm:!p-8">
             <div className="!mb-6">
-                <h1 className="!text-2xl sm:!text-3xl !font-bold !text-gray-800">
-                    Student Medical Screening Details
+                <h1 className="!text-2xl sm:!text-3xl !font-bold !text-green-600">
+                    Your Medical Screenings
                 </h1>
-                <p className="!text-gray-600 !mt-2">
-                    Viewing health screening submission
+                <p className="!text-gray-700 !mt-2">
+                    View your health screening details and track your progress
                 </p>
                 <Link
-                    to="/admin/screenings"
+                    to="/dashboard/user"
                     className="!inline-block !mt-4 !text-blue-600 hover:!underline !text-sm"
                 >
-                    ← Back to Student Medical Screening List
+                    ← Back to Dashboard
                 </Link>
             </div>
+
+            {/* Search Input */}
+            {/* <div className="!mb-6">
+                <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={handleSearch}
+                    placeholder="Search by name, matric no, jamb no, faculty or department..."
+                    className="!w-full !p-3 !border !border-gray-300 !rounded-lg !shadow-sm focus:!outline-none focus:!ring-2 focus:!ring-green-400"
+                />
+            </div> */}
 
             <div className="!bg-white !p-4 sm:!p-6 !rounded-2xl !shadow-md !overflow-x-auto">
                 {loading ? (
@@ -129,14 +143,13 @@ const AdminViewForm = () => {
                     <div className="!flex !flex-col !items-center !justify-center !space-y-4 !mt-8">
                         <p className="!text-red-500 !text-center">{error}</p>
                         <button
-                            onClick={() => window.location.reload()}
                             className="!px-6 !py-2 !bg-blue-600 !text-white !rounded-lg hover:!bg-blue-700 !transition-all"
                         >
                             Retry
                         </button>
                     </div>
-                ) : !screening ? (
-                    <p className="!text-center !text-gray-600">No screening found.</p>
+                ) : !screenings ? (
+                    <p className="!text-center !text-gray-600">No screenings found.</p>
                 ) : (
                     <>
                         <table className="!w-full !text-left !border-collapse min-w-[1000px] !mb-6">
@@ -148,23 +161,23 @@ const AdminViewForm = () => {
                             </thead>
                             <tbody>
                                 {Object.entries({
-                                    'Surname': screening.surname,
-                                    'Other Names': screening.otherNames,
-                                    'Age': screening.age,
-                                    'Date of Birth': screening.dob,
-                                    'Sex': screening.sex,
-                                    'Nationality': screening.nationality,
-                                    'State': screening.state,
-                                    'Marital Status': screening.maritalStatus,
-                                    'Faculty': screening.faculty,
-                                    'Matric Number': screening.matricNo,
-                                    'JAMB Reg No': screening.jambRegNo,
-                                    'Department': screening.department,
-                                    'Phone Number': screening.telNo,
-                                    'Religion': screening.religion,
-                                    'Next of Kin Name': screening.nextOfKinName,
-                                    'Relationship': screening.relationship,
-                                    'Next of Kin Address': screening.nextOfKinAddress
+                                    'Surname': screenings.surname,
+                                    'Other Names': screenings.otherNames,
+                                    'Age': screenings.age,
+                                    'Date of Birth': screenings.dob,
+                                    'Sex': screenings.sex,
+                                    'Nationality': screenings.nationality,
+                                    'State': screenings.state,
+                                    'Marital Status': screenings.maritalStatus,
+                                    'Faculty': screenings.faculty,
+                                    'Matric Number': screenings.matricNo,
+                                    'JAMB Reg No': screenings.jambRegNo,
+                                    'Department': screenings.department,
+                                    'Phone Number': screenings.telNo,
+                                    'Religion': screenings.religion,
+                                    'Next of Kin Name': screenings.nextOfKinName,
+                                    'Relationship': screenings.relationship,
+                                    'Next of Kin Address': screenings.nextOfKinAddress
                                 }).map(([field, value]) => (
                                     <tr key={field} className="hover:!bg-green-50 !transition-all even:!bg-gray-50">
                                         <td className="!p-4 !font-medium !border !border-gray-200">{field}</td>
@@ -226,5 +239,4 @@ const AdminViewForm = () => {
         </div>
     );
 };
-
-export default AdminViewForm;
+export default StudentScreenings;

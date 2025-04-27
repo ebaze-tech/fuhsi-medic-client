@@ -12,6 +12,7 @@ import AdminScreenings from "./AdminScreeing";
 import AdminViewForm from "./AdminViewForm";
 import UpdateQuestionnairePage from "./AdminEditForm";
 import NotFoundPage from "./NotFound";
+import StudentScreenings from "./StudentScreening";
 // import SubmissionPage from "./components/SubmissionPage";
 
 function App() {
@@ -30,8 +31,8 @@ function App() {
             path="/download-page" element={<SubmissionPage />} />
           <Route
             path="*"
-            element={<NotFoundPage/>}
-          /> 
+            element={<NotFoundPage />}
+          />
           <Route
             path="/user/login"
             element={<UserLogin />}
@@ -45,6 +46,8 @@ function App() {
             element={<AdminLogin />}
           />
           <Route path="/admin/screenings" element={<AdminScreenings />} />
+          <Route path="/student/screenings" element={<StudentScreenings />} />
+          <Route path="/dashboard/form/:formId" element={<StudentScreenings />} />
           <Route path={'/dashboard/:formId'} element={<AdminViewForm />} />
         </Routes>
       </div>

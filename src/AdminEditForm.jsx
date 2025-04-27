@@ -104,7 +104,7 @@ const UpdateQuestionnairePage = () => {
             // Fetch existing data if needed
             const fetchFormData = async () => {
                 try {
-                    const response = await API.get(`/admin-dashboard/form/${formId}`);
+                    const response = await API.get(`/dashboard/form/${formId}`);
                     console.log("Single Form Data: ", response.data)
                     setFormData(response.data);
                 } catch (error) {

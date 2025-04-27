@@ -23,7 +23,7 @@ const AdminScreenings = () => {
         const fetchScreenings = async () => {
             try {
                 setLoading(true);
-                const response = await API.get("/admin-dashboard/all-forms");
+                const response = await API.get("/dashboard/all-forms");
                 setScreenings(response.data);
                 setFilteredScreenings(response.data); // Initialize filtered data
                 setError("");

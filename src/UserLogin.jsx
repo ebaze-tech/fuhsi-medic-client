@@ -120,7 +120,7 @@ const UserLogin = () => {
             </div>
             <h1 className="!text-2xl !font-bold !text-white">Student Portal</h1>
             <p className="!text-green-100 !mt-1 !text-sm">
-              Federal University of Health Sciences, Ila-Orangun
+              Federal University of Health Sciences, Ila Orangun
             </p>
           </div>
 
@@ -222,7 +222,7 @@ const UserLogin = () => {
       </main>
 
       <footer className="!mt-8 !text-white !text-sm !text-center !z-10 !px-4">
-        &copy; {new Date().getFullYear()} Federal University of Health Sciences, Ila-Orangun. All rights reserved.
+        &copy; {new Date().getFullYear()} Federal University of Health Sciences, Ila Orangun. All rights reserved.
       </footer>
     </div>
   );
