@@ -25,7 +25,7 @@ function App() {
 
           <Route path="/completed-page" element={<CompletedPage />} />
           <Route path="/completed-page/:formId" element={<CompletedPage />} />
-          <Route path="/dashboard/user" element={<UserDashboard />} />
+          <Route path="/dashboard/user/:formId" element={<UserDashboard />} />
           <Route path="/dashboard/admin" element={<AdminDashboard />} />
           <Route
             path="/download-page" element={<SubmissionPage />} />
@@ -46,8 +46,8 @@ function App() {
             element={<AdminLogin />}
           />
           <Route path="/admin/screenings" element={<AdminScreenings />} />
-          <Route path="/student/screenings" element={<StudentScreenings />} />
-          <Route path="/dashboard/form/:formId" element={<StudentScreenings />} />
+          {/* <Route path="/student/screenings" element={<StudentScreenings />} /> */}
+          <Route path="/dashboard/form/student/:formId" element={<StudentScreenings />} />
           <Route path={'/dashboard/:formId'} element={<AdminViewForm />} />
         </Routes>
       </div>

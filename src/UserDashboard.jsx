@@ -99,8 +99,7 @@ const UserDashboard = () => {
                         <h2 className="!text-2xl !font-bold !text-gray-800 !mb-6">Health & Screenings</h2>
                         <div className="!grid !grid-cols-1 md:!grid-cols-2 lg:!grid-cols-3 !gap-6">
                             {[
-                                { title: "My Screening Submissions", description: "View your past health screening submissions.", path: `/dashboard/form/student/${formId}` },
-                                { title: "My Screening Submissions", description: "View your past health screening submissions.", path: `/student/screenings/${formId}` },
+                                { title: "My Screening Submissions", description: "View your past health screening submissions.", path: `/dashboard/form/${formId}` },
                                 { title: "Book a Health Screening", description: "Schedule a new health screening appointment.", path: "/student/book-screening" },
                                 { title: "Health Resources", description: "Access guides and information on maintaining good health.", path: "/student/health-resources" },
                             ].map((item, idx) => (

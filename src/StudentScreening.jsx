@@ -39,7 +39,7 @@ const StudentScreenings = () => {
         const fetchScreenings = async () => {
             try {
                 setLoading(true);
-                const response = await API.get(`/dashboard/form/${formId}`);
+                const response = await API.get(`/dashboard/form/student/${formId}`);
                 console.log("Form Response", response.data)
                 setScreenings(response.data);
                 setError("");
