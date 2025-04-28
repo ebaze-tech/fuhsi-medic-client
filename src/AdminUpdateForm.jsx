@@ -8,79 +8,81 @@ import { Disclosure, Transition } from "@headlessui/react";
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/24/outline";
 
 const QuestionnairePage = () => {
-  const location = useLocation()
-  const [formData, setFormData] = useState(location.state?.formData || {
-    surname: "John",
-    otherNames: "Doe",
-    age: "20",
-    dob: "20/1/1995",
-    sex: "Male",
-    nationality: "Nigerian",
-    state: "Oyo",
-    maritalStatus: "Single",
-    faculty: "Technology",
-    matricNo: "12345",
-    jambRegNo: "ER1234",
-    department: "BMLS",
-    telNo: "098765",
-    religion: "NONE",
-    nextOfKinName: "NONE",
-    relationship: "NONE",
-    nextOfKinAddress: "NONE",
-    nextOfKinTel: "NONE",
-    tuberculosisYes: true,
-    tuberculosisNo: false,
-    asthmaYes: true,
-    asthmaNo: false,
-    pepticUlcerYes: true,
-    pepticUlcerNo: false,
-    sickleCellYes: true,
-    sickleCellNo: false,
-    allergiesYes: true,
-    allergiesNo: false,
-    diabetesYes: true,
-    diabetesNo: false,
-    hypertensionYes: true,
-    hypertensionNo: false,
-    seizuresYes: true,
-    seizuresNo: false,
-    mentalIllnessYes: true,
-    mentalIllnessNo: false,
-    familyTuberculosisYes: true,
-    familyTuberculosisNo: false,
-    familyMentalIllnessYes: true,
-    familyMentalIllnessNo: false,
-    familyDiabetesYes: true,
-    familyDiabetesNo: false,
-    familyHeartDiseaseYes: true,
-    familyHeartDiseaseNo: false,
-    smallpoxYes: true,
-    smallpoxNo: false,
-    poliomyelitisYes: true,
-    poliomyelitisNo: false,
-    immunizationTuberculosisYes: true,
-    immunizationTuberculosisNo: false,
-    meningitisYes: true,
-    meningitisNo: false,
-    hpvYes: true,
-    hpvNo: false,
-    hepatitisBYes: true,
-    hepatitisBNo: false,
-    tobaccoUseYes: true,
-    tobaccoUseNo: false,
-    secondhandSmokeYes: true,
-    secondhandSmokeNo: false,
-    alcoholConsumptionYes: true,
-    alcoholConsumptionNo: false,
-    tobaccoAlcoholDetails: "NONE",
-    otherMedicalInfo: "NONE",
-  });
+  const location = useLocation();
+  const [formData, setFormData] = useState(
+    location.state?.formData || {
+      surname: "John",
+      otherNames: "Doe",
+      age: "20",
+      dob: "20/1/1995",
+      sex: "Male",
+      nationality: "Nigerian",
+      state: "Oyo",
+      maritalStatus: "Single",
+      faculty: "Technology",
+      matricNo: "12345",
+      jambRegNo: "ER1234",
+      department: "BMLS",
+      telNo: "098765",
+      religion: "NONE",
+      nextOfKinName: "NONE",
+      relationship: "NONE",
+      nextOfKinAddress: "NONE",
+      nextOfKinTel: "NONE",
+      tuberculosisYes: true,
+      tuberculosisNo: false,
+      asthmaYes: true,
+      asthmaNo: false,
+      pepticUlcerYes: true,
+      pepticUlcerNo: false,
+      sickleCellYes: true,
+      sickleCellNo: false,
+      allergiesYes: true,
+      allergiesNo: false,
+      diabetesYes: true,
+      diabetesNo: false,
+      hypertensionYes: true,
+      hypertensionNo: false,
+      seizuresYes: true,
+      seizuresNo: false,
+      mentalIllnessYes: true,
+      mentalIllnessNo: false,
+      familyTuberculosisYes: true,
+      familyTuberculosisNo: false,
+      familyMentalIllnessYes: true,
+      familyMentalIllnessNo: false,
+      familyDiabetesYes: true,
+      familyDiabetesNo: false,
+      familyHeartDiseaseYes: true,
+      familyHeartDiseaseNo: false,
+      smallpoxYes: true,
+      smallpoxNo: false,
+      poliomyelitisYes: true,
+      poliomyelitisNo: false,
+      immunizationTuberculosisYes: true,
+      immunizationTuberculosisNo: false,
+      meningitisYes: true,
+      meningitisNo: false,
+      hpvYes: true,
+      hpvNo: false,
+      hepatitisBYes: true,
+      hepatitisBNo: false,
+      tobaccoUseYes: true,
+      tobaccoUseNo: false,
+      secondhandSmokeYes: true,
+      secondhandSmokeNo: false,
+      alcoholConsumptionYes: true,
+      alcoholConsumptionNo: false,
+      tobaccoAlcoholDetails: "NONE",
+      otherMedicalInfo: "NONE",
+    }
+  );
 
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   //   const [sectionBOpen, setSectionBOpen] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   //   const [collapsedSections, setCollapsedSections] = useState({
   //     sectionA: false,
   //     sectionB: false,
@@ -268,11 +270,14 @@ const QuestionnairePage = () => {
     setShowConfirmation(false);
     setIsSubmitting(true);
     try {
-      navigate("/download-page", { state: { formData } })
+      navigate("/download-page", { state: { formData } });
     } catch (error) {
       console.error("Error in handleProceed:", error);
       alert("Error. Please try again");
-      setErrors(error.response?.data?.message || "Error during download. Refresh the page")
+      setErrors(
+        error.response?.data?.message ||
+          "Error during download. Refresh the page"
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -280,7 +285,7 @@ const QuestionnairePage = () => {
 
   const handleGoBack = () => {
     setShowConfirmation(false);
-    navigate("/questionnaire-page")
+    navigate("/questionnaire-page");
   };
 
   return (
@@ -842,20 +847,20 @@ const QuestionnairePage = () => {
               {(formData.tobaccoUseYes ||
                 formData.secondhandSmokeYes ||
                 formData.alcoholConsumptionYes) && (
-                  <TextInput
-                    label="If the answer to any of the above is YES, provide details:"
-                    name="tobaccoAlcoholDetails"
-                    value={formData.tobaccoAlcoholDetails}
-                    onChange={handleInputChange}
-                    error={errors.tobaccoAlcoholDetails}
-                    className="bg-white"
-                    required={
-                      formData.tobaccoUseYes ||
-                      formData.secondhandSmokeYes ||
-                      formData.alcoholConsumptionYes
-                    }
-                  />
-                )}
+                <TextInput
+                  label="If the answer to any of the above is YES, provide details:"
+                  name="tobaccoAlcoholDetails"
+                  value={formData.tobaccoAlcoholDetails}
+                  onChange={handleInputChange}
+                  error={errors.tobaccoAlcoholDetails}
+                  className="bg-white"
+                  required={
+                    formData.tobaccoUseYes ||
+                    formData.secondhandSmokeYes ||
+                    formData.alcoholConsumptionYes
+                  }
+                />
+              )}
 
               <TextInput
                 label="If there is any other medical information not stated above, please provide details:"
