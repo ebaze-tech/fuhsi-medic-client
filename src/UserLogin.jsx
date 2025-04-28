@@ -141,43 +141,6 @@ const UserLogin = () => {
             )}
 
             <form onSubmit={handleSubmit} className="!space-y-5">
-              {/* Surname Field */}
-              <div>
-                <label className="!block !text-sm !font-medium !text-gray-700 !mb-1">
-                  Surname
-                </label>
-                <div className="!relative">
-                  <div
-                    className={`!absolute !inset-y-0 !left-0 !pl-3 !flex !items-center !pointer-events-none ${
-                      isFocused.surname ? "!text-blue-600" : "!text-gray-400"
-                    }`}
-                  >
-                    <FiUser size={18} />
-                  </div>
-                  <input
-                    type="text"
-                    name="surname"
-                    value={surname}
-                    onChange={handleChange}
-                    onFocus={() => handleFocus("surname")}
-                    onBlur={() => handleBlur("surname")}
-                    placeholder="Enter your surname in capital letters"
-                    className={`!w-full !pl-10 !pr-4 !py-3 !border ${
-                      errors.surname ? "!border-red-500" : "!border-gray-300"
-                    } !rounded-lg !focus:outline-none !focus:ring-2 ${
-                      errors.surname
-                        ? "!focus:ring-red-500"
-                        : "!focus:ring-blue-500"
-                    } !focus:border-transparent !transition`}
-                  />
-                </div>
-                {errors.surname && (
-                  <p className="!mt-1 !text-sm !text-red-600">
-                    {errors.surname}
-                  </p>
-                )}
-              </div>
-
               {/* UTME Number Field */}
               <div>
                 <label className="!block !text-sm !font-medium !text-gray-700 !mb-1">
@@ -211,6 +174,43 @@ const UserLogin = () => {
                 {errors.utmeNo && (
                   <p className="!mt-1 !text-sm !text-red-600">
                     {errors.utmeNo}
+                  </p>
+                )}
+              </div>
+
+              {/* Surname Field */}
+              <div>
+                <label className="!block !text-sm !font-medium !text-gray-700 !mb-1">
+                  Surname
+                </label>
+                <div className="!relative">
+                  <div
+                    className={`!absolute !inset-y-0 !left-0 !pl-3 !flex !items-center !pointer-events-none ${
+                      isFocused.surname ? "!text-blue-600" : "!text-gray-400"
+                    }`}
+                  >
+                    <FiUser size={18} />
+                  </div>
+                  <input
+                    type="text"
+                    name="surname"
+                    value={surname}
+                    onChange={handleChange}
+                    onFocus={() => handleFocus("surname")}
+                    onBlur={() => handleBlur("surname")}
+                    placeholder="Enter your surname in capital letters"
+                    className={`!w-full !pl-10 !pr-4 !py-3 !border ${
+                      errors.surname ? "!border-red-500" : "!border-gray-300"
+                    } !rounded-lg !focus:outline-none !focus:ring-2 ${
+                      errors.surname
+                        ? "!focus:ring-red-500"
+                        : "!focus:ring-blue-500"
+                    } !focus:border-transparent !transition`}
+                  />
+                </div>
+                {errors.surname && (
+                  <p className="!mt-1 !text-sm !text-red-600">
+                    {errors.surname}
                   </p>
                 )}
               </div>
