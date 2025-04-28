@@ -143,7 +143,7 @@ const QuestionnairePage = () => {
       if (!formData[field]) {
         newErrors[field] = `${field
           .replace(/([A-Z])/g, " $1")
-          .toLowerCase()} is required`;
+          .toUpperCase()} is required`;
       }
     });
 

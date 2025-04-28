@@ -161,14 +161,14 @@ const UserLogin = () => {
                     onChange={handleChange}
                     onFocus={() => handleFocus("utmeNo")}
                     onBlur={() => handleBlur("utmeNo")}
-                    placeholder="e.g. 12345678AB"
+                    placeholder="Enter your UTME Number as password"
                     className={`!w-full !pl-10 !pr-4 !py-3 !border ${
                       errors.utmeNo ? "!border-red-500" : "!border-gray-300"
                     } !rounded-lg !focus:outline-none !focus:ring-2 ${
                       errors.utmeNo
                         ? "!focus:ring-red-500"
                         : "!focus:ring-blue-500"
-                    } !focus:border-transparent !uppercase !transition`}
+                    } !focus:border-transparent !transition`}
                   />
                 </div>
                 {errors.utmeNo && (

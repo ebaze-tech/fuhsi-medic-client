@@ -17,12 +17,13 @@ const AdminViewForm = () => {
   const { formId } = useParams();
 
   useEffect(() => {
-    if (!isAuthenticated) {
+    if (!isAuthenticated || !user) {
       setError("User not authenticated");
+      logout();
+      navigate("/admin/login");
       setLoading(false);
       return;
     }
-
     const progressInterval = setInterval(() => {
       setProgress((prev) => {
         if (prev >= 100) {
@@ -70,12 +71,15 @@ const AdminViewForm = () => {
       setPdfLoading(true);
       setPdfError("");
 
-      const response = await API.get(`/questionnaire/admin/${formId}/download`, {
-        responseType: "blob",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await API.get(
+        `/questionnaire/admin/${formId}/download`,
+        {
+          responseType: "blob",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       console.log(response.data);
 
@@ -110,12 +114,6 @@ const AdminViewForm = () => {
   const handleGoBack = () => {
     navigate(-2);
   };
-
-  if (!isAuthenticated || !user) {
-    return (
-      <div className="!min-h-screen !bg-gray-100 !p-4 sm:!p-8">Loading...</div>
-    );
-  }
 
   return (
     <div className="!min-h-screen !bg-gray-100 !p-4 sm:!p-8">

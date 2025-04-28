@@ -13,8 +13,10 @@ const UserScreeningForm = () => {
   const { user, isAuthenticated, logout } = useAuth();
 
   useEffect(() => {
-    if (!isAuthenticated) {
+    if (!isAuthenticated || !user) {
       setError("User not authenticated");
+      logout();
+      navigate("/user/login");
       setLoading(false);
       return;
     }
@@ -54,12 +56,6 @@ const UserScreeningForm = () => {
   //     student.otherNames?.toLowerCase().includes(searchQuery.toLowerCase()) ||
   //     student.matricNo?.toLowerCase().includes(searchQuery.toLowerCase())
   // );
-
-  if (!isAuthenticated || !user) {
-    return (
-      <div className="!min-h-screen !bg-gray-100 !p-4 sm:!p-8">Loading...</div>
-    );
-  }
 
   return (
     <div className="!min-h-screen !bg-gray-100 !p-4 sm:!p-8">
@@ -139,7 +135,6 @@ const UserScreeningForm = () => {
                     <td className="!p-4">{student.relationship}</td>
                     <td className="!p-4">{student.nextOfKinAddress}</td>
                     <td className="!flex !flex-col !items-center !gap-2">
-
                       <Link to={`/dashboard/student-form/${student._id}`}>
                         <button className="!w-32 !bg-gray-300 !mt-12 !text-center !font-semibold !rounded-md !cursor-pointer !p-2 hover:!bg-gray-400">
                           See More

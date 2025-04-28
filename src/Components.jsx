@@ -11,9 +11,9 @@ export const SelectInput = ({
   disabled = false,
 }) => {
   return (
-    <div className={`flex flex-col gap-1 w-full ${className} mb-4`}>
-      <label htmlFor={name} className="text-sm font-medium text-gray-800">
-        {label} {required && <span className="text-red-500">*</span>}
+    <div className={`!flex !flex-col !gap-1 !w-full ${className} !mb-4`}>
+      <label htmlFor={name} className="!text-sm !font-medium !text-gray-800">
+        {label} {required && <span className="!text-red-500">*</span>}
       </label>
       <select
         id={name}
@@ -22,13 +22,13 @@ export const SelectInput = ({
         onChange={onChange}
         disabled={disabled}
         aria-invalid={!!error}
-        className={`w-full px-4 py-2 rounded-lg border text-sm shadow-sm transition focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+        className={`!w-full !px-4 !py-2 !rounded-lg !border !text-sm !shadow-sm !transition !focus:outline-none !focus:ring-2 !focus:ring-blue-500 !focus:border-blue-500
           ${
             disabled
-              ? "bg-gray-100 text-gray-500 cursor-not-allowed"
-              : "bg-white"
+              ? "!bg-gray-100 !text-gray-500 !cursor-not-allowed"
+              : "!bg-white"
           }
-          ${error ? "border-red-400" : "border-gray-300"}`}
+          ${error ? "!border-red-400" : "!border-gray-300"}`}
       >
         <option value="">Select {label}</option>
         {options.map((option) => (
@@ -38,7 +38,7 @@ export const SelectInput = ({
         ))}
       </select>
       {error && (
-        <p className="text-sm text-red-600 mt-1" role="alert">
+        <p className="!text-sm !text-red-600 !mt-1" role="alert">
           {error}
         </p>
       )}
@@ -59,14 +59,16 @@ export const TextInput = ({
   disabled = false,
   textarea = false,
 }) => {
-  const baseClasses = `w-full px-4 py-2 rounded-lg border text-sm shadow-sm transition focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
-    ${disabled ? "bg-gray-100 text-gray-500 cursor-not-allowed" : "bg-white"}
-    ${error ? "border-red-400" : "border-gray-300"}`;
+  const baseClasses = `!w-full !px-4 !py-2 !rounded-lg !border !text-sm !shadow-sm !transition !focus:outline-none !focus:ring-2 !focus:ring-blue-500 !focus:border-blue-500
+    ${
+      disabled ? "!bg-gray-100 !text-gray-500 !cursor-not-allowed" : "!bg-white"
+    }
+    ${error ? "!border-red-400" : "!border-gray-300"}`;
 
   return (
-    <div className={`flex flex-col gap-1 w-full ${className} mb-4`}>
-      <label htmlFor={name} className="text-sm font-medium text-gray-800">
-        {label} {required && <span className="text-red-500">*</span>}
+    <div className={`!flex !flex-col !gap-1 !w-full ${className} !mb-4`}>
+      <label htmlFor={name} className="!text-sm !font-medium !text-gray-800">
+        {label} {required && <span className="!text-red-500">*</span>}
       </label>
       {textarea ? (
         <textarea
@@ -75,7 +77,7 @@ export const TextInput = ({
           value={value}
           onChange={onChange}
           disabled={disabled}
-          className={`${baseClasses} resize-y min-h-[120px]`}
+          className={`!appearance-none !resize-none ${baseClasses} !min-h-[120px] !rounded-md !bg-gray-100 !mt-2`}
         />
       ) : (
         <input
@@ -89,7 +91,7 @@ export const TextInput = ({
         />
       )}
       {error && (
-        <p className="text-sm text-red-600 mt-1" role="alert">
+        <p className="!text-sm !text-red-600 !mt-1" role="alert">
           {error}
         </p>
       )}
@@ -97,6 +99,7 @@ export const TextInput = ({
   );
 };
 
+// YesNoRadioGroup Component
 export const YesNoRadioGroup = ({
   label,
   yesName,
