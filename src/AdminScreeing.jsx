@@ -15,16 +15,15 @@ const AdminScreenings = () => {
   // const { formId } = useParams()
 
   useEffect(() => {
-    if (!isAuthenticated || !user) {
-      setError("User not authenticated");
-      logout();
-      navigate("/admin/login");
-      setLoading(false);
-      return;
-    }
-    console.log(isAuthenticated);
-
     const fetchScreenings = async () => {
+      if (!isAuthenticated || !user) {
+        setError("User not authenticated");
+        logout();
+        navigate("/admin/login");
+        setLoading(false);
+        return;
+      }
+      console.log(isAuthenticated);
       try {
         setLoading(true);
         const response = await API.get("/dashboard/all-forms");
