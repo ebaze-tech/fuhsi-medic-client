@@ -1,5 +1,5 @@
 import React from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./AuthContext";
 import QuestionnairePage from "./BiodataForm";
 import SubmissionPage from "./Submission";
@@ -16,7 +16,6 @@ import StudentScreenings from "./StudentScreening";
 import UserScreeningForm from "./UserScreeningForm";
 import StudentViewForm from "./StudentViewForm";
 import { Analytics } from "@vercel/analytics/react";
-// import SubmissionPage from "./components/SubmissionPage";
 
 function App() {
   return (
@@ -24,34 +23,42 @@ function App() {
       <Analytics>
         <div className="!min-h-screen !bg-gray-100">
           <Routes>
+            {/* User Routes */}
+            <Route path="/" element={<UserLogin />} />
+            <Route path="/user/login" element={<UserLogin />} />
+            <Route path="/dashboard/user" element={<UserDashboard />} />
+            <Route path="/user/screenings" element={<UserScreeningForm />} />
+
+            {/* Admin Routes */}
+            <Route path="/admin/login" element={<AdminLogin />} />
+            <Route path="/dashboard/admin" element={<AdminDashboard />} />
+            <Route path="/admin/screenings" element={<AdminScreenings />} />
+
+            {/* Forms and Submissions */}
             <Route path="/questionnaire-page" element={<QuestionnairePage />} />
             <Route
               path="/questionnaire-page/update/:formId"
               element={<UpdateQuestionnairePage />}
             />
-
-            <Route path="/completed-page" element={<CompletedPage />} />
-            <Route path="/completed-page/:formId" element={<CompletedPage />} />
-            <Route path="/dashboard/user" element={<UserDashboard />} />
-            <Route path="/dashboard/admin" element={<AdminDashboard />} />
+            <Route
+              path="/completed-page/:formId?"
+              element={<CompletedPage />}
+            />
             <Route path="/download-page" element={<SubmissionPage />} />
-            <Route path="*" element={<NotFoundPage />} />
-            <Route path="*" element={<NotFoundPage />} />
-            <Route path="/user/login" element={<UserLogin />} />
-            <Route path="/" element={<UserLogin />} />
-            <Route path="/admin/login" element={<AdminLogin />} />
-            <Route path="/admin/screenings" element={<AdminScreenings />} />
-            <Route path="/user/screenings" element={<UserScreeningForm />} />
-            {/* <Route path="/student/screenings" element={<StudentScreenings />} /> */}
+
+            {/* Admin and Student Form Viewing */}
+            <Route path="/dashboard/:formId" element={<AdminViewForm />} />
             <Route
               path="/dashboard/form/student/:formId"
               element={<StudentScreenings />}
             />
-            <Route path={"/dashboard/:formId"} element={<AdminViewForm />} />
             <Route
-              path={"/dashboard/student-form/:formId"}
+              path="/dashboard/student-form/:formId"
               element={<StudentViewForm />}
             />
+
+            {/* Catch-All Route */}
+            <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </div>
       </Analytics>
