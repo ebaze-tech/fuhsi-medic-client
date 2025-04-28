@@ -86,8 +86,10 @@ const QuestionnairePage = () => {
   const navigate = useNavigate();
 
   if (!isAuthenticated || !user) {
+    setErrors("User not authenticated");
     logout();
     navigate("/user/login");
+    return;
   }
 
   //   const [collapsedSections, setCollapsedSections] = useState({

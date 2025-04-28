@@ -14,14 +14,16 @@ const AdminScreenings = () => {
   // const { formId } = useParams()
 
   useEffect(() => {
-    if (!isAuthenticated) {
+    if (!isAuthenticated || !user) {
       setError("User not authenticated");
+      logout();
+      navigate("/admin/login");
       setLoading(false);
       return;
     }
     console.log(isAuthenticated);
 
-    const fetchScreenings = async ( ) => {
+    const fetchScreenings = async () => {
       try {
         setLoading(true);
         const response = await API.get("/dashboard/all-forms");
@@ -61,12 +63,6 @@ const AdminScreenings = () => {
     );
     setFilteredScreenings(filtered);
   };
-
-  if (!isAuthenticated || !user) {
-    return (
-      <div className="!min-h-screen !bg-gray-100 !p-4 sm:!p-8">Loading...</div>
-    );
-  }
 
   return (
     <div className="!min-h-screen !bg-gray-100 !p-4 sm:!p-8">
