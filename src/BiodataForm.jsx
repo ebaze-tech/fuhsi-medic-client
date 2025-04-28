@@ -271,7 +271,7 @@ const QuestionnairePage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateForm()) {
-      alert("Please ensure all required");
+      alert("Fill in all required fields to proceed");
       return;
     }
 

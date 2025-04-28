@@ -44,7 +44,7 @@ const StudentViewForm = () => {
                 console.error("Error fetching screening:", error);
                 if (error.response?.status === 401) {
                     logout();
-                    navigate('/admin/login');
+                    navigate('/user/login');
                 } else {
                     setError(error.response?.data?.message || "Failed to load screening. Please try again.");
                 }
