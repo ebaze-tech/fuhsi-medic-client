@@ -6,6 +6,7 @@ import { useAuth } from "./AuthContext";
 const AdminScreenings = () => {
   const [screenings, setScreenings] = useState([]);
   const [filteredScreenings, setFilteredScreenings] = useState([]);
+  const [formData, setFormData] = useState({});
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -46,6 +47,30 @@ const AdminScreenings = () => {
       }
     };
     fetchScreenings();
+
+    const fetchTotalForms = async () => {
+      try {
+        setLoading(true);
+        const response = await API.get("/forms/count");
+        setFormData(response.data);
+        setError("");
+      } catch (error) {
+        console.error("Error fetching screenings:", error);
+        if (error.response?.status === 401) {
+          logout();
+          navigate("/admin/login");
+        } else {
+          setError(
+            error.response?.data?.message ||
+              "Failed to load screenings. Please try again."
+          );
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTotalForms();
   }, [isAuthenticated, user, navigate, logout]);
 
   const handleSearch = (e) => {
@@ -79,6 +104,19 @@ const AdminScreenings = () => {
         >
           ← Back to Dashboard
         </Link>
+      </div>
+
+      {/* Total Forms Submitted Section */}
+      <div className="!mb-6 !mt-4">
+        <div className="!bg-green-100 !text-green-800 !p-4 !rounded-xl !shadow-md !flex !items-center !justify-between">
+          <div>
+            <h2 className="!text-lg !font-semibold">Total Forms Submitted</h2>
+            <p className="!text-2xl !font-bold">
+              {formData?.total !== undefined ? formData.total : "Loading..."}
+            </p>
+          </div>
+          <div className="!text-green-600">📄</div>
+        </div>
       </div>
 
       {/* Search Input */}
