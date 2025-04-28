@@ -75,7 +75,7 @@ const QuestionnairePage = () => {
     alcoholConsumptionYes: false,
     alcoholConsumptionNo: false,
     tobaccoAlcoholDetails: "",
-    otherMedicalInfo: "NONE",
+    otherMedicalInfo: "",
   });
 
   const [errors, setErrors] = useState({});
@@ -157,7 +157,7 @@ const QuestionnairePage = () => {
       if (!formData[field]) {
         newErrors[field] = `${field
           .replace(/([A-Z])/g, " $1")
-          .toLowerCase()} is required`;
+          .toUpperCase()} is required`;
       }
     });
 
@@ -938,7 +938,6 @@ const QuestionnairePage = () => {
                   value={formData.tobaccoAlcoholDetails}
                   onChange={handleInputChange}
                   error={errors.tobaccoAlcoholDetails}
-                  className="bg-white"
                   required={
                     formData.tobaccoUseYes ||
                     formData.secondhandSmokeYes ||
@@ -952,7 +951,7 @@ const QuestionnairePage = () => {
                 name="otherMedicalInfo"
                 value={formData.otherMedicalInfo}
                 onChange={handleInputChange}
-                className="!bg-white !mt-4"
+                className="!bg-inherit !p-4"
                 textarea
               />
             </div>

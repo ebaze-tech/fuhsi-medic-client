@@ -193,7 +193,7 @@ const UpdateQuestionnairePage = () => {
             if (!formData[field]) {
                 newErrors[field] = `${field
                     .replace(/([A-Z])/g, " $1")
-                    .toLowerCase()} is required`;
+                    .toUppercase()} is required`;
             }
         });
 
