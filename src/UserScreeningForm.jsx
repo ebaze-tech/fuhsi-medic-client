@@ -64,7 +64,7 @@ const UserScreeningForm = () => {
           Student Medical Screening
         </h1>
         <Link
-          to="/dashboard/admin"
+          to="/dashboard/user"
           className="!inline-block !mt-4 !text-blue-600 hover:!underline !text-sm"
         >
           ← Back to Dashboard

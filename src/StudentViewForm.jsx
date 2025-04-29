@@ -120,7 +120,7 @@ const StudentViewForm = () => {
           Viewing health screening submission
         </p>
         <Link
-          to="/admin/screenings"
+          to="/user/screenings"
           className="!inline-block !mt-4 !text-blue-600 hover:!underline !text-sm"
         >
           ← Back to Student Medical Screening List

@@ -112,7 +112,7 @@ const AdminViewForm = () => {
   };
 
   const handleGoBack = () => {
-    navigate(-2);
+    navigate('/admin/screenings');
   };
 
   return (
