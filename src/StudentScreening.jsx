@@ -108,7 +108,7 @@ const StudentScreenings = () => {
   };
 
   const handleGoBack = () => {
-    navigate(-2);
+    navigate('/user/screenings');
   };
 
   return (

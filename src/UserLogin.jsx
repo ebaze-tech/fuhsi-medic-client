@@ -83,8 +83,8 @@ const UserLogin = () => {
 
     try {
       const response = await API.post("/auth/user/login", {
-        surname: surname.trim(),
-        utmeNo: utmeNo.trim(),
+        surname,
+        utmeNo,
       });
       console.log("API data:", response); // Debug
       const responseData = response.data?.data || response.data;
