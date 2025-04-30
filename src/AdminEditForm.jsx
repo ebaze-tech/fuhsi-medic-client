@@ -335,6 +335,7 @@ const UpdateQuestionnairePage = () => {
     setShowConfirmation(true);
   };
 
+
   const handleUpdate = async () => {
     if (!user) {
       return <p className="!text-red-800 !font-bold">User not authenticated</p>;
