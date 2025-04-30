@@ -110,6 +110,11 @@ const UpdateQuestionnairePage = () => {
           const response = await API.get(`/dashboard/form/${formId}`);
           console.log("Single Form Data: ", response.data);
           setFormData(response.data);
+
+          if (response.data.faculty) {
+            const departments = facultyDepartments[response.data.faculty] || [];
+            setAvailableDepartments(departments);
+          }
         } catch (error) {
           console.error("Error fetching form data:", error);
           setErrors(
@@ -130,17 +135,29 @@ const UpdateQuestionnairePage = () => {
     if (formData.faculty) {
       const departments = facultyDepartments[formData.faculty] || [];
       setAvailableDepartments(departments);
+
+      if (formData.department && !departments.includes(formData.department)) {
+        setFormData((prev) => ({ ...prev, department: "" }));
+      }
+    } else {
+      setAvailableDepartments([]);
     }
   }, [formData.faculty]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
 
     if (name === "faculty") {
       const departments = facultyDepartments[value] || [];
       setAvailableDepartments(departments);
-      setFormData((prev) => ({ ...prev, department: "" }));
+
+      if (formData.department && !departments.includes(formData.department)) {
+        setFormData((prev) => ({ ...prev, [name]: value, department: "" }));
+      } else {
+        setFormData((prev) => ({ ...prev, [name]: value }));
+      }
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
     }
   };
 
@@ -180,18 +197,18 @@ const UpdateQuestionnairePage = () => {
       "relationship",
       "nextOfKinAddress",
       "nextOfKinTel",
-      "height",
-      "weight",
-      "bmi",
-      "visualAcuityRight",
-      "visualAcuityLeft",
-      "bloodPressure",
-      "pulseRate",
-      "urine",
-      "albumin",
-      "sugar",
-      "genotype",
-      "bloodGroup",
+      // "height",
+      // "weight",
+      // "bmi",
+      // "visualAcuityRight",
+      // "visualAcuityLeft",
+      // "bloodPressure",
+      // "pulseRate",
+      // "urine",
+      // "albumin",
+      // "sugar",
+      // "genotype",
+      // "bloodGroup",
     ];
 
     requiredtextFields.forEach((field) => {
@@ -443,16 +460,17 @@ const UpdateQuestionnairePage = () => {
                 <SelectInput
                   label="Faculty"
                   name="faculty"
-                  value={formData.faculty}
+                  value={formData.faculty || ""}
                   onChange={handleInputChange}
                   error={errors.faculty}
                   options={Object.keys(facultyDepartments)}
                   required
+                  disabled={loading}
                 />
                 <SelectInput
                   label="Department"
                   name="department"
-                  value={formData.department}
+                  value={formData.department || ""}
                   onChange={handleInputChange}
                   error={errors.department}
                   options={availableDepartments}
@@ -462,6 +480,7 @@ const UpdateQuestionnairePage = () => {
                       : "Select department"
                   }
                   required
+                  disabled={!formData.faculty || loading}
                 />
                 <TextInput
                   label="Matric No"
@@ -866,7 +885,7 @@ const UpdateQuestionnairePage = () => {
                 name="otherMedicalInfo"
                 value={formData.otherMedicalInfo}
                 onChange={handleInputChange}
-                className="!bg-white !mt-4"
+                className="!bg-inherit !p-4"
                 textarea
               />
             </div>
