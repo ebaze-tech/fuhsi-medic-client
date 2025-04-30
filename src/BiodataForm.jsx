@@ -83,14 +83,16 @@ const QuestionnairePage = () => {
   //   const [sectionBOpen, setSectionBOpen] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [availableDepartments, setAvailableDepartments] = useState([]);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  if (!isAuthenticated || !user) {
-    setErrors("User not authenticated");
-    logout();
-    navigate("/user/login");
-    return;
-  }
+  useEffect(() => {
+    if (!isAuthenticated || !user) {
+      setErrors("User not authenticated");
+      logout();
+      navigate("/user/login");
+    }
+  }, [isAuthenticated, user, logout, navigate]);
 
   //   const [collapsedSections, setCollapsedSections] = useState({
   //     sectionA: false,
@@ -100,13 +102,18 @@ const QuestionnairePage = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
 
     if (name === "faculty") {
       const departments = facultyDepartments[value] || [];
       setAvailableDepartments(departments);
-      // Reset department when faculty changes
-      setFormData((prev) => ({ ...prev, department: "" }));
+
+      if (formData.department && !departments.includes(formData.department)) {
+        setFormData((prev) => ({ ...prev, [name]: value, department: "" }));
+      } else {
+        setFormData((prev) => ({ ...prev, [name]: value }));
+      }
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
     }
   };
 
@@ -283,6 +290,7 @@ const QuestionnairePage = () => {
   const handleProceed = async () => {
     setShowConfirmation(false);
     setIsSubmitting(true);
+    setLoading(true);
     try {
       navigate("/download-page", { state: { formData } });
     } catch (error) {
@@ -304,6 +312,12 @@ const QuestionnairePage = () => {
     if (formData.faculty) {
       const departments = facultyDepartments[formData.faculty] || [];
       setAvailableDepartments(departments);
+
+      if (formData.department && !departments.includes(formData.department)) {
+        setFormData((prev) => ({ ...prev, department: "" }));
+      }
+    } else {
+      setAvailableDepartments([]);
     }
   }, [formData.faculty]);
 
@@ -489,22 +503,20 @@ const QuestionnairePage = () => {
                   />
                 </div>
                 <div>
-                  <TextInput
+                  <SelectInput
                     label="Faculty"
                     name="faculty"
-                    value={formData.faculty}
+                    value={formData.faculty || ""}
                     onChange={handleInputChange}
                     error={errors.faculty}
                     options={Object.keys(facultyDepartments)}
                     required
-                    // disabled={!formData.faculty}
+                    disabled={loading}
                   />
-                </div>
-                <div>
-                  <TextInput
+                  <SelectInput
                     label="Department"
                     name="department"
-                    value={formData.department}
+                    value={formData.department || ""}
                     onChange={handleInputChange}
                     error={errors.department}
                     options={availableDepartments}
@@ -514,7 +526,7 @@ const QuestionnairePage = () => {
                         : "Select department"
                     }
                     required
-                    // disabled={!formData.faculty}
+                    disabled={!formData.faculty || loading}
                   />
                 </div>
                 <div>
