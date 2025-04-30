@@ -335,7 +335,6 @@ const UpdateQuestionnairePage = () => {
     setShowConfirmation(true);
   };
 
-
   const handleUpdate = async () => {
     if (!user) {
       return <p className="!text-red-800 !font-bold">User not authenticated</p>;
@@ -345,6 +344,25 @@ const UpdateQuestionnairePage = () => {
     try {
       const update = await API.put(`/questionnaire/${formId}/update`, formData);
       console.log(update.data);
+
+      const pdfResponse = await API.get(
+        `/questionnaire/admin/${formId}/download`,
+        { responseType: "blob" }
+      );
+
+      const pdfBlob = new Blob([pdfResponse.data], { type: "application/pdf" });
+      const pdfUrl = URL.createObjectURL(pdfBlob);
+
+      const a = document.createElement("a");
+      a.href = pdfUrl;
+      a.download = `medical_form-${formData.matricNo || formId}-${
+        formData.surname
+      }-${formData.otherNames}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+
+      document.body.removeChild(a);
+      URL.revokeObjectURL(pdfUrl);
       navigate("/completed-page");
     } catch (error) {
       console.error("Error updating form:", error);
