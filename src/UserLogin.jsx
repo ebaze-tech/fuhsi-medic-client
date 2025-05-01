@@ -10,6 +10,7 @@ import BgImage from "/fushi.webp";
 const UserLogin = () => {
   const { login, isAuthenticated } = useAuth();
   const [utmeNo, setUtmeNo] = useState("");
+  const [surname, setSurname] = useState("");
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [isFocused, setIsFocused] = useState({
@@ -36,6 +37,15 @@ const UserLogin = () => {
         delete newErrors.utmeNo;
       }
     }
+    if (name === "surname") {
+      if (!value) {
+        newErrors.surname = "Surname is required";
+      } else if (!/^\d{8}[A-Z]{2}$/.test(value)) {
+        newErrors.surname = "Surname is required in capital letters";
+      } else {
+        delete newErrors.surname;
+      }
+    }
 
     setErrors(newErrors);
   };
@@ -43,6 +53,7 @@ const UserLogin = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     if (name === "utmeNo") setUtmeNo(value);
+    if (name === "surname") setSurname(value);
     validateField(name, value);
   };
 
@@ -53,11 +64,13 @@ const UserLogin = () => {
   const handleBlur = (field) => {
     setIsFocused({ ...isFocused, [field]: false });
     validateField(field, field === "utmeNo");
+    validateField(field, field === "surname");
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     validateField("utmeNo", utmeNo);
+    validateField("surname", surname);
 
     const currentErrors = {};
     if (!utmeNo) currentErrors.utmeNo = "UTME Number is required";
@@ -72,9 +85,9 @@ const UserLogin = () => {
 
     try {
       const response = await API.post("/auth/user/login", {
-        utmeNo,
+        utmeNo,surname
       });
-      console.log("API data:", response); // Debug
+      console.log("API data:", response);
       const responseData = response.data?.data || response.data;
 
       if (!responseData?.token || !responseData?.user) {
@@ -167,7 +180,7 @@ const UserLogin = () => {
               </div>
 
               {/* Surname Field */}
-              {/* <div>
+              <div>
                 <label className="!block !text-sm !font-medium !text-gray-700 !mb-1">
                   Surname
                 </label>
@@ -201,7 +214,7 @@ const UserLogin = () => {
                     {errors.surname}
                   </p>
                 )}
-              </div> */}
+              </div>
 
               <button
                 type="submit"

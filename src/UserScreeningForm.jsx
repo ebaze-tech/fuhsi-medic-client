@@ -25,6 +25,7 @@ const UserScreeningForm = () => {
       try {
         setLoading(true);
         const response = await API.get("/dashboard/form/student");
+        console.log(response.data)
         setScreenings(response.data);
         setError("");
       } catch (error) {
@@ -84,7 +85,7 @@ const UserScreeningForm = () => {
               Retry
             </button>
           </div>
-        ) : screenings.length === 0 ? (
+        ) : screenings === null ? (
           <QuestionnairePage />
         ) : (
           <>
@@ -112,37 +113,37 @@ const UserScreeningForm = () => {
                 </tr>
               </thead>
               <tbody>
-                {screenings.map((student) => (
-                  <tr
-                    key={student._id}
-                    className="hover:!bg-green-50 !transition-all even:!bg-gray-50"
-                  >
-                    <td className="!p-4 !font-medium">{student.surname}</td>
-                    <td className="!p-4">{student.otherNames}</td>
-                    <td className="!p-4">{student.age}</td>
-                    <td className="!p-4">{student.dob}</td>
-                    <td className="!p-4">{student.sex}</td>
-                    <td className="!p-4">{student.nationality}</td>
-                    <td className="!p-4">{student.state}</td>
-                    <td className="!p-4">{student.maritalStatus}</td>
-                    <td className="!p-4">{student.faculty}</td>
-                    <td className="!p-4">{student.matricNo}</td>
-                    <td className="!p-4">{student.jambRegNo}</td>
-                    <td className="!p-4">{student.department}</td>
-                    <td className="!p-4">{student.telNo}</td>
-                    <td className="!p-4">{student.religion}</td>
-                    <td className="!p-4">{student.nextOfKinName}</td>
-                    <td className="!p-4">{student.relationship}</td>
-                    <td className="!p-4">{student.nextOfKinAddress}</td>
-                    <td className="!flex !flex-col !items-center !gap-2">
-                      <Link to={`/dashboard/student-form/${student._id}`}>
-                        <button className="!w-32 !bg-gray-300 !mt-12 !text-center !font-semibold !rounded-md !cursor-pointer !p-2 hover:!bg-gray-400">
-                          See More
-                        </button>
-                      </Link>
-                    </td>
-                  </tr>
-                ))}
+                {/* {screenings.map((student) => ( */}
+                <tr
+                  key={screenings._id}
+                  className="hover:!bg-green-50 !transition-all even:!bg-gray-50"
+                >
+                  <td className="!p-4 !font-medium">{screenings.surname}</td>
+                  <td className="!p-4">{screenings.otherNames}</td>
+                  <td className="!p-4">{screenings.age}</td>
+                  <td className="!p-4">{screenings.dob}</td>
+                  <td className="!p-4">{screenings.sex}</td>
+                  <td className="!p-4">{screenings.nationality}</td>
+                  <td className="!p-4">{screenings.state}</td>
+                  <td className="!p-4">{screenings.maritalStatus}</td>
+                  <td className="!p-4">{screenings.faculty}</td>
+                  <td className="!p-4">{screenings.matricNo}</td>
+                  <td className="!p-4">{screenings.jambRegNo}</td>
+                  <td className="!p-4">{screenings.department}</td>
+                  <td className="!p-4">{screenings.telNo}</td>
+                  <td className="!p-4">{screenings.religion}</td>
+                  <td className="!p-4">{screenings.nextOfKinName}</td>
+                  <td className="!p-4">{screenings.relationship}</td>
+                  <td className="!p-4">{screenings.nextOfKinAddress}</td>
+                  <td className="!flex !flex-col !items-center !gap-2">
+                    <Link to={`/dashboard/student-form/${screenings._id}`}>
+                      <button className="!w-32 !bg-gray-300 !mt-12 !text-center !font-semibold !rounded-md !cursor-pointer !p-2 hover:!bg-gray-400">
+                        See More
+                      </button>
+                    </Link>
+                  </td>
+                </tr>
+                {/* ))} */}
               </tbody>
             </table>
           </>
