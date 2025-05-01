@@ -18,7 +18,7 @@ import StudentViewForm from "./StudentViewForm";
 import { Analytics } from "@vercel/analytics/react";
 import MaintenancePage from "./MaintenancePage";
 
-const MAINTENANCE_MODE = false;
+const MAINTENANCE_MODE = true;
 
 function App() {
   return (
