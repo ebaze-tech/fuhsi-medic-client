@@ -108,7 +108,7 @@ const StudentScreenings = () => {
   };
 
   const handleGoBack = () => {
-    navigate('/user/screenings');
+    navigate('/user/screenings/:formId');
   };
 
   return (
