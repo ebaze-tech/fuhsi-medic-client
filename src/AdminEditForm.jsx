@@ -378,8 +378,21 @@ const UpdateQuestionnairePage = () => {
 
   const facultyDepartments = {
     "Basic Medical Sciences": ["Medicine and Surgery", "Pharmacology"],
-    Science: ["Biochemistry", "Microbiology", "Biotechnology"],
-    "Allied Health Sciences": ["Nursing Science", "Medical Laboratory Science"],
+    "Allied Health Sciences": [
+      "Nursing Science",
+      "Medical Laboratory Science",
+      "Information Technology and Health Informatics",
+      "Audiology",
+      "Prosthetics and Orthotics",
+      "Nutrition and Dietetics",
+      "Physiotherapy",
+      "Environmental Health Science",
+    ],
+    "Science": [
+      "Biochemistry",
+      "Microbiology",
+      "Biotechnology and Molecular Biology",
+    ],
   };
 
   if (loading) {

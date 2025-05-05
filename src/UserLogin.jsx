@@ -37,11 +37,13 @@ const UserLogin = () => {
         delete newErrors.utmeNo;
       }
     }
+
     if (name === "surname") {
       if (!value) {
         newErrors.surname = "Surname is required";
-      } else if (!/^\d{8}[A-Z]{2}$/.test(value)) {
-        newErrors.surname = "Surname is required in capital letters";
+      } else if (!/^[A-Z]+$/.test(value)) {
+        // Ensure surname is in uppercase
+        newErrors.surname = "Surname must be in uppercase";
       } else {
         delete newErrors.surname;
       }
@@ -85,7 +87,8 @@ const UserLogin = () => {
 
     try {
       const response = await API.post("/auth/user/login", {
-        utmeNo,surname
+        utmeNo: utmeNo.toUpperCase(),
+        surname: surname.toUpperCase(),
       });
       console.log("API data:", response);
       const responseData = response.data?.data || response.data;
