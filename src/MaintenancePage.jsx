@@ -57,12 +57,12 @@ const MaintenancePage = () => {
         </div>
 
         {/* Refresh Button */}
-        <button
+{/*         <button
           onClick={handleRefresh}
           className="!px-6 !py-2 !bg-yellow-500 !text-white !font-medium !rounded-lg hover:!bg-yellow-600 !transition-colors"
         >
           Try Again
-        </button>
+        </button> */}
       </div>
     </div>
   );
