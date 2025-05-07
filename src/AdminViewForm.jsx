@@ -24,21 +24,25 @@ const AdminViewForm = () => {
       setLoading(false);
       return;
     }
+
     const progressInterval = setInterval(() => {
-      setProgress((prev) => {
-        if (prev >= 100) {
-          clearInterval(progressInterval);
-          return 100;
-        }
-        return prev + 1;
-      });
+      try {
+        setProgress((prev) => {
+          if (prev >= 100) {
+            clearInterval(progressInterval);
+            return 100;
+          }
+          return prev + 1;
+        });
+      } catch (e) {
+        clearInterval(progressInterval);
+      }
     }, 30);
 
     const fetchScreening = async () => {
       try {
         setLoading(true);
         const response = await API.get(`/dashboard/form/${formId}`);
-        console.log("Form Response", response.data);
         setScreening(response.data);
         setError("");
       } catch (error) {
@@ -59,33 +63,25 @@ const AdminViewForm = () => {
 
     fetchScreening();
 
-    return () => {
-      clearInterval(progressInterval);
-    };
-  }, [isAuthenticated, formId, navigate, logout]);
+    return () => clearInterval(progressInterval);
+  }, [isAuthenticated, formId, navigate, logout, user]);
 
   const handleDownloadPdf = async () => {
     setPdfLoading(true);
+    setPdfError("");
+
     try {
       const token = localStorage.getItem("token");
-      setPdfLoading(true);
-      setPdfError("");
 
       const response = await API.get(
         `/questionnaire/admin/${formId}/download`,
         {
           responseType: "blob",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         }
       );
 
-      console.log(response.data);
-
       const blob = new Blob([response.data]);
-
-      // Create download link
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
@@ -112,7 +108,7 @@ const AdminViewForm = () => {
   };
 
   const handleGoBack = () => {
-    navigate('/admin/screenings');
+    navigate("/admin/screenings");
   };
 
   return (
@@ -193,18 +189,15 @@ const AdminViewForm = () => {
               </tbody>
             </table>
 
-            {/* Progress Bar */}
-            {submissionStatus === "pending" && (
+            {submissionStatus === "pending" && progress < 100 && (
               <div className="!w-full !bg-gray-200 !rounded-full !h-4 !mb-4">
                 <div
                   className="!bg-green-500 !h-4 !rounded-full transition-all duration-300 ease-in-out"
                   style={{ width: `${progress}%` }}
                 ></div>
-                {progress < 100 && (
-                  <p className="!text-center !text-sm !mt-1">
-                    Loading, please wait... {progress}%
-                  </p>
-                )}
+                <p className="!text-center !text-sm !mt-1">
+                  Loading, please wait... {progress}%
+                </p>
               </div>
             )}
 
@@ -265,6 +258,7 @@ const AdminViewForm = () => {
                 )}
               </button>
             </div>
+
             {pdfError && (
               <p className="!text-red-500 !mt-2 !text-center !text-sm">
                 {pdfError}
