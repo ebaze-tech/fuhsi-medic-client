@@ -37,19 +37,17 @@ const StudentViewForm = () => {
 
     const fetchScreening = async () => {
       try {
-        setLoading(true);
         const response = await API.get(`/dashboard/form/student/${formId}`);
-        console.log("Form Response", response.data);
         setScreening(response.data);
         setError("");
-      } catch (error) {
-        console.error("Error fetching screening:", error);
-        if (error.response?.status === 401) {
+      } catch (err) {
+        console.error("Error fetching screening:", err);
+        if (err.response?.status === 401) {
           logout();
           navigate("/user/login");
         } else {
           setError(
-            error.response?.data?.message ||
+            err.response?.data?.message ||
               "Failed to load screening. Please try again."
           );
         }
@@ -60,26 +58,18 @@ const StudentViewForm = () => {
 
     fetchScreening();
 
-    return () => {
-      clearInterval(progressInterval);
-    };
-  }, [isAuthenticated, formId, navigate, logout]);
+    return () => clearInterval(progressInterval);
+  }, [isAuthenticated, user, formId, navigate, logout]);
 
   const handleDownloadPdf = async () => {
     setPdfLoading(true);
+    setPdfError("");
     try {
-      setPdfLoading(true);
-      setPdfError("");
-
       const response = await API.get(`/questionnaire/${formId}/download`, {
         responseType: "blob",
       });
 
-      console.log(response.data);
-
       const blob = new Blob([response.data]);
-
-      // Create download link
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
@@ -94,21 +84,37 @@ const StudentViewForm = () => {
 
       setSubmissionStatus("completed");
       navigate(`/completed-page/${formId}`);
-    } catch (error) {
-      console.error("Error downloading PDF:", error);
+    } catch (err) {
+      console.error("Error downloading PDF:", err);
       setPdfError(
-        error.response?.data?.message ||
-          "Error generating PDF. Please try again"
+        err.response?.data?.message || "Error generating PDF. Please try again."
       );
     } finally {
       setPdfLoading(false);
     }
   };
 
-  const handleGoBack = () => {
-    navigate(-2);
-  };
+  const handleGoBack = () => navigate(-2);
 
+  const screeningFields = screening && {
+    Surname: screening.surname,
+    "Other Names": screening.otherNames,
+    Age: screening.age,
+    "Date of Birth": screening.dob,
+    Sex: screening.sex,
+    Nationality: screening.nationality,
+    State: screening.state,
+    "Marital Status": screening.maritalStatus,
+    Faculty: screening.faculty,
+    "Matric Number": screening.matricNo,
+    "JAMB Reg No": screening.jambRegNo,
+    Department: screening.department,
+    "Phone Number": screening.telNo,
+    Religion: screening.religion,
+    "Next of Kin Name": screening.nextOfKinName,
+    Relationship: screening.relationship,
+    "Next of Kin Address": screening.nextOfKinAddress,
+  };
 
   return (
     <div className="!min-h-screen !bg-gray-100 !p-4 sm:!p-8">
@@ -154,25 +160,7 @@ const StudentViewForm = () => {
                 </tr>
               </thead>
               <tbody>
-                {Object.entries({
-                  Surname: screening.surname,
-                  "Other Names": screening.otherNames,
-                  Age: screening.age,
-                  "Date of Birth": screening.dob,
-                  Sex: screening.sex,
-                  Nationality: screening.nationality,
-                  State: screening.state,
-                  "Marital Status": screening.maritalStatus,
-                  Faculty: screening.faculty,
-                  "Matric Number": screening.matricNo,
-                  "JAMB Reg No": screening.jambRegNo,
-                  Department: screening.department,
-                  "Phone Number": screening.telNo,
-                  Religion: screening.religion,
-                  "Next of Kin Name": screening.nextOfKinName,
-                  Relationship: screening.relationship,
-                  "Next of Kin Address": screening.nextOfKinAddress,
-                }).map(([field, value]) => (
+                {Object.entries(screeningFields).map(([field, value]) => (
                   <tr
                     key={field}
                     className="hover:!bg-green-50 !transition-all even:!bg-gray-50"
@@ -230,12 +218,12 @@ const StudentViewForm = () => {
                         r="10"
                         stroke="currentColor"
                         strokeWidth="4"
-                      ></circle>
+                      />
                       <path
                         className="!opacity-75"
                         fill="currentColor"
-                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                      ></path>
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                      />
                     </svg>
                     Generating PDF...
                   </>
@@ -260,6 +248,7 @@ const StudentViewForm = () => {
                 )}
               </button>
             </div>
+
             {pdfError && (
               <p className="!text-red-500 !mt-2 !text-center !text-sm">
                 {pdfError}

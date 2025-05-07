@@ -2,11 +2,9 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import API from "../api";
 import { useAuth } from "./AuthContext";
-import QuestionnairePage from "./BiodataForm";
 
 const UserScreeningForm = () => {
-  const [screenings, setScreenings] = useState([]);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [screening, setScreening] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const navigate = useNavigate();
@@ -17,7 +15,6 @@ const UserScreeningForm = () => {
       setError("User not authenticated");
       logout();
       navigate("/user/login");
-      setLoading(false);
       return;
     }
 
@@ -25,17 +22,16 @@ const UserScreeningForm = () => {
       try {
         setLoading(true);
         const response = await API.get("/dashboard/form/student");
-        console.log(response.data)
-        setScreenings(response.data);
+        setScreening(response.data);
         setError("");
-      } catch (error) {
-        console.error("Error fetching screenings:", error);
-        if (error.response?.status === 401) {
+      } catch (err) {
+        console.error("Error fetching screenings:", err);
+        if (err.response?.status === 401) {
           logout();
           navigate("/user/login");
         } else {
           setError(
-            error.response?.data?.message ||
+            err.response?.data?.message ||
               "Failed to load screenings. Please try again."
           );
         }
@@ -47,16 +43,39 @@ const UserScreeningForm = () => {
     fetchUserForm();
   }, [isAuthenticated, user, navigate, logout]);
 
-  const handleRetry = () => {
-    window.location.reload();
-  };
+  const handleRetry = () => window.location.reload();
 
-  // const filteredScreenings = screenings.filter(
-  //   (student) =>
-  //     student.surname?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-  //     student.otherNames?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-  //     student.matricNo?.toLowerCase().includes(searchQuery.toLowerCase())
-  // );
+  const renderTableRow = (data) => (
+    <tr
+      key={data._id}
+      className="!hover:!bg-green-50 !transition-all even:!bg-gray-50"
+    >
+      <td className="!p-4 !font-medium">{data.surname}</td>
+      <td className="!p-4">{data.otherNames}</td>
+      <td className="!p-4">{data.age}</td>
+      <td className="!p-4">{data.dob}</td>
+      <td className="!p-4">{data.sex}</td>
+      <td className="!p-4">{data.nationality}</td>
+      <td className="!p-4">{data.state}</td>
+      <td className="!p-4">{data.maritalStatus}</td>
+      <td className="!p-4">{data.faculty}</td>
+      <td className="!p-4">{data.matricNo}</td>
+      <td className="!p-4">{data.jambRegNo}</td>
+      <td className="!p-4">{data.department}</td>
+      <td className="!p-4">{data.telNo}</td>
+      <td className="!p-4">{data.religion}</td>
+      <td className="!p-4">{data.nextOfKinName}</td>
+      <td className="!p-4">{data.relationship}</td>
+      <td className="!p-4">{data.nextOfKinAddress}</td>
+      <td className="!p-4">
+        <Link to={`/dashboard/student-form/${data._id}`}>
+          <button className="!w-32 !bg-green-200 !text-green-900 !cursor-pointer !font-semibold !rounded-lg !p-2 hover:!bg-green-300">
+            View
+          </button>
+        </Link>
+      </td>
+    </tr>
+  );
 
   return (
     <div className="!min-h-screen !bg-gray-100 !p-4 sm:!p-8">
@@ -85,68 +104,48 @@ const UserScreeningForm = () => {
               Retry
             </button>
           </div>
-        ) : screenings === null ? (
-          <QuestionnairePage />
+        ) : screening === null ? (
+          <span className="!text-lg !text-red-600 !font-extrabold !hover:!text-blue-800 !hover:!underline !transition !text-center !flex !flex-col !items-center !justify-center !w-full">
+            There was an issue when you filled your form initially.
+            <a
+              href="mailto:helpdesk@fuhsi.edu.ng"
+              className="!text-lg !text-red-600 !border-b-4 !font-extrabold !hover:!text-blue-800 !hover:!underline !transition"
+            >
+              Click here to contact the admin to have your form printed
+            </a>
+          </span>
         ) : (
-          <>
-            <table className="!w-full !text-left !border-collapse min-w-[1000px]">
+          <div className="!overflow-x-auto">
+            <table className="!w-full !text-left !border-collapse min-w-[1200px]">
               <thead>
                 <tr className="!bg-green-600 !text-white">
                   <th className="!p-4 !rounded-tl-2xl">Surname</th>
                   <th className="!p-4">Other Names</th>
                   <th className="!p-4">Age</th>
-                  <th className="!p-4">Date of Birth</th>
+                  <th className="!p-4">DOB</th>
                   <th className="!p-4">Sex</th>
                   <th className="!p-4">Nationality</th>
                   <th className="!p-4">State</th>
-                  <th className="!p-4">Marital Status</th>
+                  <th className="!p-4">Marital</th>
                   <th className="!p-4">Faculty</th>
-                  <th className="!p-4">Matric Number</th>
-                  <th className="!p-4">JAMB Reg No</th>
-                  <th className="!p-4">Department</th>
-                  <th className="!p-4">Phone Number</th>
+                  <th className="!p-4">Matric No</th>
+                  <th className="!p-4">JAMB No</th>
+                  <th className="!p-4">Dept</th>
+                  <th className="!p-4">Phone</th>
                   <th className="!p-4">Religion</th>
-                  <th className="!p-4">Next of Kin Name</th>
-                  <th className="!p-4">Relationship</th>
-                  <th className="!p-4">Next of Kin Address</th>
-                  <th className="!p-7 !rounded-tr-2xl">View Details</th>
+                  <th className="!p-4">Next Of Kin Name</th>
+                  <th className="!p-4">Relation</th>
+                  <th className="!p-4">Next Of Kin Address</th>
+                  <th className="!p-4 !rounded-tr-2xl">Action</th>
                 </tr>
               </thead>
               <tbody>
-                {/* {screenings.map((student) => ( */}
-                <tr
-                  key={screenings._id}
-                  className="hover:!bg-green-50 !transition-all even:!bg-gray-50"
-                >
-                  <td className="!p-4 !font-medium">{screenings.surname}</td>
-                  <td className="!p-4">{screenings.otherNames}</td>
-                  <td className="!p-4">{screenings.age}</td>
-                  <td className="!p-4">{screenings.dob}</td>
-                  <td className="!p-4">{screenings.sex}</td>
-                  <td className="!p-4">{screenings.nationality}</td>
-                  <td className="!p-4">{screenings.state}</td>
-                  <td className="!p-4">{screenings.maritalStatus}</td>
-                  <td className="!p-4">{screenings.faculty}</td>
-                  <td className="!p-4">{screenings.matricNo}</td>
-                  <td className="!p-4">{screenings.jambRegNo}</td>
-                  <td className="!p-4">{screenings.department}</td>
-                  <td className="!p-4">{screenings.telNo}</td>
-                  <td className="!p-4">{screenings.religion}</td>
-                  <td className="!p-4">{screenings.nextOfKinName}</td>
-                  <td className="!p-4">{screenings.relationship}</td>
-                  <td className="!p-4">{screenings.nextOfKinAddress}</td>
-                  <td className="!flex !flex-col !items-center !gap-2">
-                    <Link to={`/dashboard/student-form/${screenings._id}`}>
-                      <button className="!w-32 !bg-gray-300 !mt-12 !text-center !font-semibold !rounded-md !cursor-pointer !p-2 hover:!bg-gray-400">
-                        See More
-                      </button>
-                    </Link>
-                  </td>
-                </tr>
-                {/* ))} */}
+                {Array.isArray(screening)
+                  ? screening.map(renderTableRow)
+                  : renderTableRow(screening)}
               </tbody>
             </table>
-          </>
+          </div>
         )}
       </div>
     </div>
